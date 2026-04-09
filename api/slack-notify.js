@@ -1,15 +1,22 @@
+// Vercel serverless function — Slack notification proxy
+// Reads SLACK_WEBHOOK_URL from Vercel environment variables so the secret
+// never appears in client-side code or the public GitHub repo.
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
-  const SLACK_URL = process.env.SLACK_WEBHOOK_URL;
-  if (!SLACK_URL) return res.status(500).json({ error: 'SLACK_WEBHOOK_URL not configured' });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+  if (!webhookUrl) {
+    return res.status(200).json({ ok: false, reason: 'not_configured' });
+  }
   try {
-    const resp = await fetch(SLACK_URL, {
+    await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req.body)
+      body: JSON.stringify(req.body),
     });
-    res.status(resp.status).json({ ok: resp.ok });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
+    return res.status(200).json({ ok: true });
+  } catch (err) {
+    return res.status(200).json({ ok: false, reason: 'fetch_failed' });
   }
 }

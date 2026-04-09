@@ -390,10 +390,10 @@
       };
       Object.assign(payload, utm);
 
-      var SLACK_WEBHOOK = 'https://hooks.slack.com/services/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';
+      // Slack webhook routed via /api/slack-notify proxy (SLACK_WEBHOOK_URL in Vercel env)
       try {
-        await fetch(SLACK_WEBHOOK, {
-          method: 'POST', mode: 'no-cors',
+        await fetch('/api/slack-notify', {
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: '*[JobLedger]* New signup!\n*Email:* ' + payload.email + '\n*Firm:* ' + payload.company + '\n*Client count:* ' + (payload.role || 'n/a') + '\n*Source:* ' + payload.source + '\n*Current process:* ' + (payload.challenge || 'n/a') })
         });
