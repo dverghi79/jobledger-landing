@@ -378,7 +378,7 @@
 
       var utm = getUTMParams();
       var payload = {
-        secret: 'jl_5r2m8n3k1p6q',
+
         product: 'JobLedger',
         email: document.getElementById('email').value,
         company: document.getElementById('company').value,
@@ -389,6 +389,15 @@
         page_url: window.location.href
       };
       Object.assign(payload, utm);
+
+      // Google Sheet via server-side proxy (GOOGLE_SHEET_WEBHOOK_URL + SHEET_SECRET in Vercel env)
+      try {
+        await fetch('/api/sheet-notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch(ex) {}
 
       // Slack webhook routed via /api/slack-notify proxy (SLACK_WEBHOOK_URL in Vercel env)
       try {
