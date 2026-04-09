@@ -1,9 +1,13 @@
 // Vercel serverless function — Stripe payment webhook handler
-// Verifies Stripe signatures server-side, then posts to SLACK_PAYMENT_WEBHOOK_URL.
+// Verifies Stripe signature, logs to Google Sheets via GAS relay,
+// and posts a Slack notification to the payments channel.
+//
 // Required env vars (set per project in Vercel dashboard):
-//   STRIPE_WEBHOOK_SECRET  — signing secret from Stripe dashboard (whsec_...)
-//   SLACK_PAYMENT_WEBHOOK_URL — Slack incoming webhook URL for the payments channel
-//   PRODUCT_NAME           — human-readable product name (e.g. "ReviewRadar")
+//   STRIPE_WEBHOOK_SECRET     — signing secret from Stripe dashboard (whsec_...)
+//   SLACK_PAYMENT_WEBHOOK_URL — Slack incoming webhook URL for payments channel
+//   GOOGLE_SHEET_WEBHOOK_URL  — Google Apps Script web app URL (same as sheet-notify uses)
+//   SHEET_SECRET              — shared secret expected by the GAS script
+//   PRODUCT_NAME              — human-readable product name (e.g. "ReviewRadar")
 import crypto from 'crypto';
 
 export const config = {
@@ -20,8 +24,8 @@ export default async function handler(req, res) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   const slackUrl = process.env.SLACK_PAYMENT_WEBHOOK_URL;
 
-  if (!webhookSecret || !slackUrl) {
-    console.error('[stripe-webhook] Missing STRIPE_WEBHOOK_SECRET or SLACK_PAYMENT_WEBHOOK_URL');
+  if (!webhookSecret) {
+    console.error('[stripe-webhook] Missing STRIPE_WEBHOOK_SECRET');
     return res.status(200).json({ ok: false, reason: 'not_configured' });
   }
 
@@ -101,20 +105,47 @@ export default async function handler(req, res) {
     const currency = (session.currency || 'usd').toUpperCase();
     const productName = process.env.PRODUCT_NAME || 'LeanAI Studio';
 
-    const slackText =
-      `💳 *New Founding Customer — ${productName}!*\n` +
-      `*Email:* ${email}\n` +
-      `*Amount:* ${currency} ${amount}/mo\n` +
-      `*Session:* ${session.id}`;
+    // 1. Log payment to Google Sheets via GAS relay (same relay as form signups)
+    const sheetUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
+    if (sheetUrl) {
+      const sheetPayload = {
+        event: 'payment_confirmed',
+        email,
+        amount,
+        currency,
+        product: productName,
+        stripe_session_id: session.id,
+        stripe_customer_id: session.customer || '',
+        paid_at: new Date().toISOString(),
+        secret: process.env.SHEET_SECRET || '',
+      };
+      try {
+        await fetch(sheetUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sheetPayload),
+        });
+      } catch (err) {
+        console.error('[stripe-webhook] Google Sheets logging failed:', err);
+      }
+    }
 
-    try {
-      await fetch(slackUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: slackText }),
-      });
-    } catch (err) {
-      console.error('[stripe-webhook] Slack notification failed:', err);
+    // 2. Send Slack notification to payments channel
+    if (slackUrl) {
+      const slackText =
+        `💳 *New Founding Customer — ${productName}!*\n` +
+        `*Email:* ${email}\n` +
+        `*Amount:* ${currency} ${amount}/mo\n` +
+        `*Session:* ${session.id}`;
+      try {
+        await fetch(slackUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: slackText }),
+        });
+      } catch (err) {
+        console.error('[stripe-webhook] Slack notification failed:', err);
+      }
     }
   }
 
