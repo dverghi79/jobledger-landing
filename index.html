@@ -351,6 +351,15 @@
         });
       } catch(ex) {}
 
+      // Resend: contact creation + welcome email (RESEND_API_KEY env var in Vercel)
+      try {
+        await fetch('/api/resend-notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, first_name: firstName, product: payload.product })
+        });
+      } catch(ex) {}
+
       // Plausible waitlist-signup event
       try { if (window.plausible) window.plausible('waitlist-signup', { props: { source: payload.source } }); } catch(ex) {}
       // Google Ads conversion
