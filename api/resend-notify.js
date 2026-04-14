@@ -28,15 +28,15 @@ module.exports = async function handler(req, res) {
 
   // Step 1: Create contact in Resend
   try {
-    const productTag = process.env.PRODUCT_NAME || productName;
     const contactPayload = {
       email: email,
       first_name: firstName || undefined,
       unsubscribed: false,
-      tags: [
-        { name: 'source', value: 'waitlist' },
-        { name: 'product', value: productTag },
-      ],
+    };
+    // Pass product name as source so Resend audience shows where each contact came from
+    contactPayload.properties = {
+      source: productName,
+      signed_up_at: new Date().toISOString(),
     };
     if (audienceId) {
       contactPayload.audience_id = audienceId;
