@@ -67,6 +67,12 @@
     .grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
     @media (max-width: 768px) { .hide-mobile { display: none !important; } }
     #cookie-banner { display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#131009;border-top:1px solid #1e1a14;padding:1rem 2rem; }
+    .sticky-header { position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(15,13,10,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #1e1a14; }
+    .sticky-header .inner { max-width:1120px;margin:0 auto;padding:0.75rem 2rem;display:flex;align-items:center;justify-content:space-between; }
+    .sticky-header .btn-sm { background:#f59e0b;color:#0f0d0a;font-weight:700;border-radius:0.375rem;padding:0.4rem 1.25rem;font-size:0.85rem;text-decoration:none;font-family:'Space Grotesk',sans-serif;transition:background 0.15s;white-space:nowrap; }
+    .sticky-header .btn-sm:hover { background:#d97706; }
+    .integration-strip { display:flex;align-items:center;gap:2rem;flex-wrap:wrap;opacity:0.4; }
+    .integration-strip svg { height:24px;width:auto; }
   </style>
 </head>
 <body>
@@ -82,16 +88,21 @@
     </div>
   </div>
 
-  <!-- NAV / LOGO -->
-  <div style="max-width:1120px;margin:0 auto;padding:1.5rem 2rem 0;">
-    <div style="display:flex;align-items:center;gap:0.5rem;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-      </svg>
-      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:#f5f0e8;letter-spacing:-0.01em;">JobLedger</span>
+  <!-- STICKY HEADER -->
+  <header class="sticky-header">
+    <div class="inner">
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+        <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:#f5f0e8;letter-spacing:-0.01em;">JobLedger</span>
+      </div>
+      <a href="#waitlist" class="btn-sm">Join the waitlist</a>
     </div>
-  </div>
+  </header>
+  <!-- Spacer for fixed header -->
+  <div style="height:3.25rem;"></div>
 
   <!-- HERO -->
   <section style="max-width:1120px;margin:0 auto;padding:4rem 2rem 4rem;position:relative;">
@@ -106,7 +117,7 @@
         <span style="color:#f59e0b;">actually knows job cost codes.</span>
       </h1>
       <p style="font-size:clamp(1.05rem,2vw,1.2rem);color:#4a4030;line-height:1.65;max-width:600px;margin-bottom:2.5rem;">
-        JobLedger reads your invoices and timesheets, maps them to the right job numbers and cost categories, and writes entries straight into QuickBooks. Built for electricians, plumbers, and general contractors who need real construction accounting, not generic bookkeeping software.
+        Stop manual data entry and fix your job costing in 10 minutes a day. JobLedger syncs your invoices to QuickBooks with perfect cost-code accuracy — even from photos, PDFs, or handwritten notes.
       </p>
       <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
         <a href="#waitlist" class="btn-primary">Join the waitlist for early access</a>
@@ -126,25 +137,52 @@
     </div>
   </section>
 
+  <!-- WORKS WITH -->
+  <section style="padding:0 2rem 3rem;">
+    <div style="max-width:1120px;margin:0 auto;">
+      <p style="font-size:0.7rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:rgba(74,64,48,0.45);margin-bottom:1.25rem;">Works with</p>
+      <div class="integration-strip">
+        <!-- QuickBooks logo -->
+        <svg viewBox="0 0 120 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:22px;">
+          <circle cx="14" cy="14" r="13" stroke="#f5f0e8" stroke-width="1.5" fill="none"/>
+          <path d="M8 9v10M8 14h5a3 3 0 0 0 0-6H8" stroke="#f5f0e8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="32" y="18" fill="#f5f0e8" font-family="'Space Grotesk',sans-serif" font-size="12" font-weight="600">QuickBooks</text>
+        </svg>
+        <!-- Xero logo -->
+        <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:22px;">
+          <text x="0" y="19" fill="#f5f0e8" font-family="'Space Grotesk',sans-serif" font-size="14" font-weight="700" letter-spacing="-0.02em">Xero</text>
+        </svg>
+        <!-- Sage logo -->
+        <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:22px;">
+          <text x="0" y="19" fill="#f5f0e8" font-family="'Space Grotesk',sans-serif" font-size="14" font-weight="700" letter-spacing="-0.02em">Sage</text>
+        </svg>
+        <!-- Excel logo -->
+        <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:22px;">
+          <text x="0" y="19" fill="#f5f0e8" font-family="'Space Grotesk',sans-serif" font-size="14" font-weight="700" letter-spacing="-0.02em">Excel</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
   <!-- PAIN SECTION -->
   <section class="border-line" style="padding:5rem 2rem;">
     <div style="max-width:1120px;margin:0 auto;">
       <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#f59e0b;margin-bottom:1rem;">The problem</p>
       <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;letter-spacing:-0.015em;max-width:660px;margin-bottom:4rem;color:#f5f0e8;">
-        Generic accounting software doesn't understand construction. You need job costing, estimating, and cost codes that match how your trade works.
+        Are you losing money on jobs without knowing it?
       </h2>
 
       <div class="grid-auto" style="gap:3rem;">
         <div>
           <span style="display:block;font-family:monospace;font-size:0.8rem;color:rgba(245,158,11,0.45);margin-bottom:0.75rem;">01</span>
           <p style="font-size:1rem;color:#4a4030;line-height:1.7;">
-            QuickBooks, Xero, FreshBooks — they handle general accounting fine. But they don't know what a CSI cost code is, can't track job profitability across change orders, and weren't built for how electricians, plumbers, or GCs actually invoice and estimate work.
+            QuickBooks, Xero, FreshBooks — they handle general accounting fine. But they don't know what a CSI cost code is, can't track job profitability across change orders, and weren't built for how electricians, plumbers, or GCs actually invoice and estimate work. You end up with a shoebox of receipts and a spreadsheet that's always 3 weeks behind.
           </p>
         </div>
         <div>
           <span style="display:block;font-family:monospace;font-size:0.8rem;color:rgba(245,158,11,0.45);margin-bottom:0.75rem;">02</span>
           <p style="font-size:1rem;color:#4a4030;line-height:1.7;">
-            When job costs are wrong, your cash flow projections are wrong. You underbid the next project because you don't know what the last one actually cost. For small construction companies, that's the difference between growing and going under.
+            By the time your bookkeeper catches a coding mistake, the profit margin on that job is already gone. You underbid the next project because you don't know what the last one actually cost. For small construction companies, that's the difference between growing and going under.
           </p>
         </div>
         <div>
@@ -174,7 +212,7 @@
             <span style="font-family:monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#4a4030;">Step 1</span>
           </div>
           <h3 style="font-size:1.05rem;font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">Upload your invoices, estimates, and timesheets</h3>
-          <p style="font-size:0.95rem;color:#4a4030;line-height:1.65;">Drop in PDFs, photos of receipts, or forward emails. JobLedger extracts vendor, amount, date, line items, and job references from whatever format your subs and suppliers send you.</p>
+          <p style="font-size:0.95rem;color:#4a4030;line-height:1.65;">Drop in PDFs, photos of receipts, or forward emails — even handwritten notes, blurry photos, and coffee-stained invoices. JobLedger extracts vendor, amount, date, line items, and job references from whatever format your subs and suppliers send you.</p>
         </div>
         <div class="card" style="padding:2rem;">
           <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
@@ -227,7 +265,7 @@
         <span class="tag">General contractors</span>
         <span class="tag">QuickBooks users</span>
         <span class="tag">Small construction companies</span>
-        <span class="tag">Specialty trade contractors</span>
+        <span class="tag">MEP contractors</span>
       </div>
     </div>
   </section>
@@ -270,6 +308,18 @@
             <div>
               <label style="display:block;font-size:0.875rem;font-weight:500;color:#f5f0e8;margin-bottom:0.375rem;">First name</label>
               <input id="first-name" type="text" placeholder="Alex" style="width:100%;height:2.75rem;padding:0 1rem;font-size:1rem;box-sizing:border-box;" />
+            </div>
+            <div>
+              <label style="display:block;font-size:0.875rem;font-weight:500;color:#f5f0e8;margin-bottom:0.375rem;">What's your trade?</label>
+              <select id="trade" style="width:100%;height:2.75rem;padding:0 1rem;font-size:1rem;box-sizing:border-box;appearance:auto;">
+                <option value="" disabled selected>Select your trade…</option>
+                <option value="electrician">Electrician</option>
+                <option value="plumber">Plumber</option>
+                <option value="general_contractor">General Contractor</option>
+                <option value="hvac">HVAC</option>
+                <option value="roofing">Roofing</option>
+                <option value="other">Other</option>
+              </select>
             </div>
             <button type="submit" id="submit-btn" style="height:3rem;background:#f59e0b;color:#0f0d0a;font-weight:700;font-size:1rem;border:none;border-radius:0.375rem;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:background 0.15s;">
               Join the waitlist for early access
@@ -322,11 +372,13 @@
       var utm = getUTMParams();
       var email = document.getElementById('email').value;
       var firstName = document.getElementById('first-name').value;
+      var trade = document.getElementById('trade').value || '';
       var payload = {
         secret: 'jl_5r2m8n3k1p6q',
         product: 'JobLedger',
         email: email,
         first_name: firstName,
+        trade: trade,
         source: utm.utm_medium || 'direct',
         submitted_at: new Date().toISOString(),
         page_url: window.location.href
@@ -338,7 +390,7 @@
         await fetch('/api/slack-notify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: '*[JobLedger]* New waitlist signup!\n*Email:* ' + email + '\n*Name:* ' + (firstName || 'n/a') + '\n*Source:* ' + payload.source })
+          body: JSON.stringify({ text: '*[JobLedger]* New waitlist signup!\n*Email:* ' + email + '\n*Name:* ' + (firstName || 'n/a') + '\n*Trade:* ' + (trade || 'n/a') + '\n*Source:* ' + payload.source })
         });
       } catch(ex) {}
 
