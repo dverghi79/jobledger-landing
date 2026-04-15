@@ -6,8 +6,8 @@
   <title>JobLedger — Construction Accounting and Estimating Software for Contractors</title>
   <meta name="description" content="Construction accounting and job costing software for electricians, plumbers, and general contractors. AI reads invoices, maps cost codes, writes entries to QuickBooks. Estimating to close in one place." />
 
-  <!-- Plausible Analytics (cookie-free, no consent required) -->
-  <script defer data-domain="jobledger.vercel.app" src="https://plausible.io/js/script.js"></script>
+  <!-- Vercel Analytics -->
+  <script defer src="/_vercel/insights/script.js"></script>
   <!-- Google Ads gtag — loaded only after cookie consent -->
   <script>
     function loadGtag() {
@@ -412,8 +412,8 @@
         });
       } catch(ex) {}
 
-      // Plausible waitlist-signup event
-      try { if (window.plausible) window.plausible('waitlist-signup', { props: { source: payload.source } }); } catch(ex) {}
+      // Vercel Analytics waitlist-signup event
+      try { if (window.va) window.va('event', { name: 'waitlist-signup', data: { product: 'JobLedger', source: payload.source } }); } catch(ex) {}
       // Google Ads conversion
       try { if (typeof gtag === 'function') gtag('event', 'conversion', { send_to: 'AW-18071371531/z6DhCLq9-JccEIv-jKlD', value: 1.0, currency: 'USD' }); } catch(ex) {}
 
