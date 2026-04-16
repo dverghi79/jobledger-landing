@@ -379,7 +379,8 @@
         email: email,
         first_name: firstName,
         trade: trade,
-        source: utm.utm_medium || 'direct',
+        source: 'JobLedger',
+        traffic_source: utm.utm_source || 'direct',
         submitted_at: new Date().toISOString(),
         page_url: window.location.href
       };
@@ -390,7 +391,7 @@
         await fetch('/api/slack-notify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: '*[JobLedger]* New waitlist signup!\n*Email:* ' + email + '\n*Name:* ' + (firstName || 'n/a') + '\n*Trade:* ' + (trade || 'n/a') + '\n*Source:* ' + payload.source })
+          body: JSON.stringify({ text: '*[JobLedger]* New waitlist signup!\n*Email:* ' + email + '\n*Name:* ' + (firstName || 'n/a') + '\n*Trade:* ' + (trade || 'n/a') + '\n*Product:* JobLedger\n*Traffic Source:* ' + (utm.utm_source || 'direct') })
         });
       } catch(ex) {}
 
@@ -413,7 +414,7 @@
       } catch(ex) {}
 
       // Vercel Analytics waitlist-signup event
-      try { if (window.va) window.va('event', { name: 'waitlist-signup', data: { product: 'JobLedger', source: payload.source } }); } catch(ex) {}
+      try { if (window.va) window.va('event', { name: 'waitlist-signup', data: { product: 'JobLedger', source: 'JobLedger', traffic_source: utm.utm_source || 'direct' } }); } catch(ex) {}
       // Google Ads conversion
       try { if (typeof gtag === 'function') gtag('event', 'conversion', { send_to: 'AW-18071371531/z6DhCLq9-JccEIv-jKlD', value: 1.0, currency: 'USD' }); } catch(ex) {}
 
