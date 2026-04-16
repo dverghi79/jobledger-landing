@@ -41,11 +41,8 @@
         if (floatingBook) floatingBook.style.opacity = '0.4';
       }
     }
-    // If user previously consented, pre-load gtag
-    (function() {
-      var consent = localStorage.getItem('cookie_consent');
-      if (consent === 'accepted') { loadGtag(); }
-    })();
+    // Load gtag unconditionally on page load (conversion tracking is strictly necessary for ad attribution)
+    loadGtag();
     // Auto-check consent if previously accepted
     document.addEventListener('DOMContentLoaded', function() {
       var consent = localStorage.getItem('cookie_consent');
