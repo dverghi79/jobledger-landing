@@ -321,6 +321,16 @@
                 <option value="other">Other</option>
               </select>
             </div>
+            <div>
+              <label style="display:block;font-size:0.875rem;font-weight:500;color:#e8f0f8;margin-bottom:0.375rem;">How many active job sites does your company manage?</label>
+              <select id="job-sites" style="width:100%;height:2.75rem;padding:0 1rem;font-size:1rem;box-sizing:border-box;appearance:auto;">
+                <option value="" disabled selected>Select a range…</option>
+                <option value="1-5">1 to 5</option>
+                <option value="6-15">6 to 15</option>
+                <option value="16-50">16 to 50</option>
+                <option value="50+">More than 50</option>
+              </select>
+            </div>
             <button type="submit" id="submit-btn" style="height:3rem;background:#f59e0b;color:#0f0d0a;font-weight:700;font-size:1rem;border:none;border-radius:0.375rem;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:background 0.15s;">
               Join the waitlist for early access
             </button>
@@ -328,6 +338,17 @@
           </form>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- INCUBATOR BRAND BADGE -->
+  <section style="padding:2.5rem 2rem 0;">
+    <div style="max-width:1120px;margin:0 auto;text-align:center;">
+      <div style="display:inline-flex;align-items:center;gap:0.625rem;padding:0.75rem 1.5rem;border:1px solid #0f1f2e;border-radius:0.375rem;background:rgba(56,189,248,0.03);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span style="font-size:0.8125rem;color:rgba(232,240,248,0.7);">A project by <a href="https://leanaistudio.com" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none;font-weight:600;">LeanAI Studio</a></span>
+      </div>
+      <p style="font-size:0.75rem;color:rgba(45,74,99,0.6);margin-top:0.75rem;">We are building this if 50 people sign up. Help us validate the idea.</p>
     </div>
   </section>
 
@@ -373,12 +394,14 @@
       var email = document.getElementById('email').value;
       var firstName = document.getElementById('first-name').value;
       var trade = document.getElementById('trade').value || '';
+      var jobSites = document.getElementById('job-sites').value || '';
       var payload = {
         secret: 'jl_5r2m8n3k1p6q',
         product: 'JobLedger',
         email: email,
         first_name: firstName,
         trade: trade,
+        job_sites: jobSites,
         source: 'JobLedger',
         traffic_source: utm.utm_source || 'direct',
         submitted_at: new Date().toISOString(),
@@ -391,7 +414,7 @@
         await fetch('/api/slack-notify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: '*[JobLedger]* New waitlist signup!\n*Email:* ' + email + '\n*Name:* ' + (firstName || 'n/a') + '\n*Trade:* ' + (trade || 'n/a') + '\n*Product:* JobLedger\n*Traffic Source:* ' + (utm.utm_source || 'direct') })
+          body: JSON.stringify({ text: '*[JobLedger]* New waitlist signup!\n*Email:* ' + email + '\n*Name:* ' + (firstName || 'n/a') + '\n*Trade:* ' + (trade || 'n/a') + '\n*Job sites:* ' + (jobSites || 'n/a') + '\n*Product:* JobLedger\n*Traffic Source:* ' + (utm.utm_source || 'direct') })
         });
       } catch(ex) {}
 
