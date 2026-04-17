@@ -14,51 +14,78 @@
     function loadGtag() {
       if (gtagLoaded) return;
       gtagLoaded = true;
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function(){dataLayer.push(arguments);};
+      // Google Consent Mode v2: default to denied (GDPR-safe)
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500
+      });
+      // If consent already granted, update immediately
+      if (localStorage.getItem('cookie_consent') === 'accepted') {
+        gtag('consent', 'update', {
+          ad_storage: 'granted',
+          analytics_storage: 'granted',
+          ad_user_data: 'granted',
+          ad_personalization: 'granted'
+        });
+      }
       var s = document.createElement('script');
       s.src = 'https://www.googletagmanager.com/gtag/js?id=AW-18071371531';
       s.async = true;
       document.head.appendChild(s);
-      window.dataLayer = window.dataLayer || [];
-      window.gtag = function(){dataLayer.push(arguments);};
       gtag('js', new Date());
       gtag('config', 'AW-18071371531');
     }
-    function handleConsentCheckbox(cb) {
-      var btn = document.getElementById('submit-btn');
-      var inlineBook = document.getElementById('inline-booking');
-      var floatingBook = document.getElementById('floating-booking');
-      if (cb.checked) {
-        localStorage.setItem('cookie_consent', 'accepted');
-        loadGtag();
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        if (inlineBook) inlineBook.style.opacity = '1';
-        if (floatingBook) floatingBook.style.opacity = '1';
-      } else {
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-        if (inlineBook) inlineBook.style.opacity = '0.4';
-        if (floatingBook) floatingBook.style.opacity = '0.4';
+    function grantConsent() {
+      localStorage.setItem('cookie_consent', 'accepted');
+      loadGtag();
+      if (typeof gtag === 'function') {
+        gtag('consent', 'update', {
+          ad_storage: 'granted',
+          analytics_storage: 'granted',
+          ad_user_data: 'granted',
+          ad_personalization: 'granted'
+        });
       }
-    }
-    // Load gtag unconditionally on page load (conversion tracking is strictly necessary for ad attribution)
-    loadGtag();
-    // Auto-check consent if previously accepted
-    document.addEventListener('DOMContentLoaded', function() {
-      var consent = localStorage.getItem('cookie_consent');
+      // Sync form checkbox + enable submit
       var cb = document.getElementById('consent-checkbox');
       var btn = document.getElementById('submit-btn');
       var inlineBook = document.getElementById('inline-booking');
       var floatingBook = document.getElementById('floating-booking');
-      if (consent === 'accepted' && cb) {
-        cb.checked = true;
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        if (inlineBook) inlineBook.style.opacity = '1';
-        if (floatingBook) floatingBook.style.opacity = '1';
+      if (cb) cb.checked = true;
+      if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+      if (inlineBook) inlineBook.style.opacity = '1';
+      if (floatingBook) floatingBook.style.opacity = '1';
+      // Dismiss consent bar
+      var bar = document.getElementById('consent-bar');
+      if (bar) bar.style.display = 'none';
+    }
+    function handleConsentCheckbox(cb) {
+      if (cb.checked) {
+        grantConsent();
       } else {
+        var btn = document.getElementById('submit-btn');
+        var inlineBook = document.getElementById('inline-booking');
+        var floatingBook = document.getElementById('floating-booking');
+        if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; }
         if (inlineBook) inlineBook.style.opacity = '0.4';
         if (floatingBook) floatingBook.style.opacity = '0.4';
+      }
+    }
+    // Load gtag on page load (in denied mode — GDPR safe, cookieless pings only)
+    loadGtag();
+    // Restore consent state + show/hide consent bar
+    document.addEventListener('DOMContentLoaded', function() {
+      var consent = localStorage.getItem('cookie_consent');
+      if (consent === 'accepted') {
+        grantConsent();
+      } else {
+        var bar = document.getElementById('consent-bar');
+        if (bar) bar.style.display = 'flex';
       }
     });
   </script>
@@ -602,5 +629,17 @@
       return false;
     }
   </script>
+
+  <!-- Cookie Consent Bar — Consent Mode v2 -->
+  <div id="consent-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:10000;background:#0f172a;border-top:1px solid #1e293b;padding:0.75rem 2rem;font-family:'DM Sans',system-ui,sans-serif;">
+    <div style="max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+      <p style="margin:0;font-size:0.8125rem;color:#94a3b8;line-height:1.4;">We use cookies to measure ad performance. <a href="/privacy.html" style="color:#38bdf8;text-decoration:underline;text-underline-offset:2px;">Privacy Policy</a></p>
+      <div style="display:flex;gap:0.75rem;align-items:center;">
+        <button onclick="grantConsent()" style="background:#38bdf8;color:#070d14;border:none;border-radius:0.25rem;padding:0.4rem 1.25rem;font-size:0.8125rem;font-weight:600;cursor:pointer;font-family:'Space Grotesk',sans-serif;white-space:nowrap;">Accept</button>
+        <button onclick="document.getElementById('consent-bar').style.display='none'" style="background:transparent;color:#64748b;border:none;padding:0.4rem 0.75rem;font-size:0.75rem;cursor:pointer;white-space:nowrap;">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
