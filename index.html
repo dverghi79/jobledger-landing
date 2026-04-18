@@ -134,14 +134,27 @@
 
     <div style="max-width:760px;">
       <h1 style="font-size:clamp(2.25rem,5vw,3.75rem);line-height:1.1;font-weight:700;letter-spacing:-0.02em;margin-bottom:1.5rem;color:#f5f0e8;">
-        Construction accounting and estimating software that
-        <span style="color:#f59e0b;">actually knows job cost codes.</span>
+        You are losing money on jobs and your books won't tell you which ones. <span style="color:#f59e0b;">JobLedger syncs invoices to QuickBooks with perfect cost-code accuracy.</span>
       </h1>
-      <p style="font-size:clamp(1.05rem,2vw,1.2rem);color:#8b7355;line-height:1.65;max-width:600px;margin-bottom:2.5rem;">
-        Stop manual data entry and fix your job costing in 10 minutes a day. JobLedger syncs your invoices to QuickBooks with perfect cost-code accuracy — even from photos, PDFs, or handwritten notes.
-      </p>
+
+      <!-- dir-122: Scannable bullets replacing paragraph subheadline -->
+      <ul style="list-style:none;padding:0;margin:0 0 2.5rem;max-width:600px;display:flex;flex-direction:column;gap:0.75rem;">
+        <li style="display:flex;align-items:flex-start;gap:0.75rem;font-size:clamp(1.05rem,2vw,1.2rem);color:#94a8b8;line-height:1.6;">
+          <span style="margin-top:0.6rem;width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
+          Upload invoices from photos, PDFs, or handwritten notes
+        </li>
+        <li style="display:flex;align-items:flex-start;gap:0.75rem;font-size:clamp(1.05rem,2vw,1.2rem);color:#94a8b8;line-height:1.6;">
+          <span style="margin-top:0.6rem;width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
+          AI maps every cost to the right job and the right cost code
+        </li>
+        <li style="display:flex;align-items:flex-start;gap:0.75rem;font-size:clamp(1.05rem,2vw,1.2rem);color:#94a8b8;line-height:1.6;">
+          <span style="margin-top:0.6rem;width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
+          Entries post straight to QuickBooks in 10 minutes a day
+        </li>
+      </ul>
+
       <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
-        <a href="#waitlist" class="btn-primary">Get Early Access</a>
+        <a href="#waitlist" class="btn-primary">Get Early Access to AI-Powered Job Costing</a>
         <a href="#how-it-works" class="btn-ghost">See how it works ↓</a>
       </div>
     </div>
@@ -157,6 +170,19 @@
       </div>
     </div>
   </section>
+
+  <!-- dir-122 improvement #3: Founder Credibility -->
+  <section style="max-width:1120px;margin:0 auto;padding:0 2rem 3rem;">
+    <div style="display:flex;align-items:center;gap:1.25rem;padding:1.25rem 1.5rem;border:1px solid #0f1f2e;border-radius:0.5rem;background:rgba(11,23,35,0.5);max-width:600px;">
+      <img src="https://leanaistudio.com/founder.jpeg" alt="Dario Verghi" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid rgba(245,158,11,0.3);" />
+      <div>
+        <p style="margin:0;font-size:1rem;font-weight:700;color:#e8f0f8;font-family:'Space Grotesk',sans-serif;">Built by Dario Verghi</p>
+        <p style="margin:0.2rem 0 0;font-size:0.875rem;color:#f59e0b;font-weight:600;">Ex-MongoDB Global VP</p>
+        <p style="margin:0.35rem 0 0;font-size:0.85rem;color:#94a8b8;line-height:1.5;">I talked to subcontractors who discovered they lost money on a job only after it was finished. JobLedger gives you job-cost visibility in real time.</p>
+      </div>
+    </div>
+  </section>
+
 
   <!-- WORKS WITH -->
   <section style="padding:0 2rem 3rem;">
@@ -182,7 +208,12 @@
           <text x="0" y="19" fill="#f5f0e8" font-family="'Space Grotesk',sans-serif" font-size="14" font-weight="700" letter-spacing="-0.02em">Excel</text>
         </svg>
       </div>
-    </div>
+    
+        <!-- dir-122 improvement #4: Callout overlays (desktop only) -->
+        <div class="hide-mobile" style="position:absolute;top:160px;right:40px;background:#f59e0b;color:#070d14;font-size:0.65rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:0.25rem;font-family:'Space Grotesk',sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(245,158,11,0.3);">AI-mapped cost codes</div>
+        <div class="hide-mobile" style="position:absolute;top:240px;left:220px;background:#f59e0b;color:#070d14;font-size:0.65rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:0.25rem;font-family:'Space Grotesk',sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(245,158,11,0.3);">Real-time job profitability</div>
+        <div class="hide-mobile" style="position:absolute;bottom:80px;right:60px;background:#f59e0b;color:#070d14;font-size:0.65rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:0.25rem;font-family:'Space Grotesk',sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(245,158,11,0.3);">Auto-posted to QuickBooks</div>
+</div>
   </section>
 
   
@@ -290,9 +321,14 @@
   <section class="border-line" style="padding:5rem 2rem;">
     <div style="max-width:1120px;margin:0 auto;">
       <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#f59e0b;margin-bottom:1rem;">The problem</p>
-      <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;letter-spacing:-0.015em;max-width:660px;margin-bottom:4rem;color:#f5f0e8;">
+      <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;letter-spacing:-0.015em;max-width:660px;margin-bottom:1.25rem;color:#f5f0e8;">
         Are you losing money on jobs without knowing it?
       </h2>
+
+      <!-- dir-122 improvement #5: Aggressive pain subparagraph -->
+      <p style="font-size:1.05rem;color:#94a8b8;line-height:1.7;max-width:620px;margin-bottom:4rem;">
+        By the time your bookkeeper catches the mistake, the profit margin is already gone. You finished the job, paid the subs, and only realized you lost money when the quarterly numbers came in. The problem is not your work. The problem is your cost codes.
+      </p>
 
       <div class="grid-auto" style="gap:3rem;">
         <div>
@@ -321,7 +357,7 @@
   <section id="how-it-works" class="border-line" style="padding:5rem 2rem;">
     <div style="max-width:1120px;margin:0 auto;">
       <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#f59e0b;margin-bottom:1rem;">How it works</p>
-      <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;letter-spacing:-0.015em;max-width:620px;margin-bottom:4rem;color:#f5f0e8;">
+      <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;letter-spacing:-0.015em;max-width:620px;margin-bottom:1.25rem;color:#f5f0e8;">
         Upload your invoices. JobLedger handles the job costing. QuickBooks gets the right entries.
       </h2>
 
@@ -333,7 +369,7 @@
             </div>
             <span style="font-family:monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#8b7355;">Step 1</span>
           </div>
-          <h3 style="font-size:1.05rem;font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">Upload your invoices, estimates, and timesheets</h3>
+          <h3 style="font-size:1.05rem;font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">Upload invoices, estimates, and timesheets from any format</h3>
           <p style="font-size:0.95rem;color:#8b7355;line-height:1.65;">Drop in PDFs, photos of receipts, or forward emails — even handwritten notes, blurry photos, and coffee-stained invoices. JobLedger extracts vendor, amount, date, line items, and job references from whatever format your subs and suppliers send you.</p>
         </div>
         <div class="card" style="padding:2rem;">
@@ -343,7 +379,7 @@
             </div>
             <span style="font-family:monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#8b7355;">Step 2</span>
           </div>
-          <h3 style="font-size:1.05rem;font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">AI maps every cost to the right job and category</h3>
+          <h3 style="font-size:1.05rem;font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">AI maps every cost to the right job and category automatically</h3>
           <p style="font-size:0.95rem;color:#8b7355;line-height:1.65;">JobLedger learns your job numbering and maps each invoice to the correct project and cost code — whether you use CSI divisions, custom codes, or your own system. Ambiguous items get flagged. Nothing is silently misclassified.</p>
         </div>
         <div class="card" style="padding:2rem;">
@@ -353,7 +389,7 @@
             </div>
             <span style="font-family:monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#8b7355;">Step 3</span>
           </div>
-          <h3 style="font-size:1.05rem;font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">Entries post straight to QuickBooks</h3>
+          <h3 style="font-size:1.05rem;font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">Entries post straight to QuickBooks with perfect accuracy</h3>
           <p style="font-size:0.95rem;color:#8b7355;line-height:1.65;">Review and approve, then entries post directly to your QuickBooks. Job profitability stays accurate, cash flow projections are reliable, and you stop spending evenings on data entry.</p>
         </div>
       </div>
@@ -398,19 +434,22 @@
       <div class="grid-2col" style="gap:3rem 5rem;align-items:start;">
         <!-- Left copy -->
         <div>
-          <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#f59e0b;margin-bottom:1rem;">Early access · Limited spots</p>
+          <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#f59e0b;margin-bottom:1rem;">Early access · Limited founding member spots</p>
           <h2 style="font-size:clamp(1.75rem,3.5vw,2.5rem);font-weight:700;letter-spacing:-0.02em;color:#f5f0e8;margin-bottom:1.25rem;line-height:1.2;">
-            Be among the first to use JobLedger.
+            Know which jobs make money and which ones don't. In real time.
           </h2>
           <p style="font-size:0.95rem;color:#8b7355;line-height:1.7;max-width:440px;margin-bottom:2rem;">
-            We are onboarding a small group of construction contractors and trade businesses to test JobLedger before full launch. Join the waitlist and be the first to know when early access opens.
+            We are onboarding a small group of specialty trade contractors using QuickBooks to test JobLedger before full launch.
           </p>
-          <div style="display:flex;flex-direction:column;gap:0.875rem;font-size:0.875rem;">
-            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(245,240,232,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>Free during early access</p>
-            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(245,240,232,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>Your feedback shapes the product</p>
-            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(245,240,232,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>No credit card required</p>
-            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(245,240,232,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>First to know when we launch</p>
+
+          <!-- dir-122: "What you'll get" value prop block -->
+          <p style="font-size:0.875rem;font-weight:600;color:#e8f0f8;margin-bottom:0.75rem;">What you'll get:</p>
+          <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.875rem;margin-bottom:1.5rem;">
+            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(232,240,248,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>Real-time job profitability from accurate cost-code mapping</p>
+            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(232,240,248,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>Early access to the construction accounting platform</p>
+            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(232,240,248,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>Priority onboarding and direct access to the founder</p>
           </div>
+          <p style="font-size:0.8rem;color:#f59e0b;font-weight:600;">Founding users get lifetime priority access.</p>
         </div>
 
         <!-- Form -->
@@ -454,7 +493,7 @@
               </select>
             </div>
             <button type="submit" id="submit-btn" style="height:3rem;background:#f59e0b;color:#0f0d0a;font-weight:700;font-size:1rem;border:none;border-radius:0.375rem;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:background 0.15s;">
-              Get Early Access
+              Get Early Access to AI-Powered Job Costing
             </button>
             <p style="font-size:0.75rem;color:rgba(180,210,230,0.65);text-align:center;margin:0;">By signing up you accept our <a href="/privacy.html" style="color:#38bdf8;text-decoration:underline;">Privacy Policy</a> and analytics cookies. No spam — we will only contact you about JobLedger.</p>
             <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1rem;padding:0.75rem 1rem;border:1px solid rgba(255,255,255,0.08);border-radius:0.5rem;background:rgba(255,255,255,0.03);cursor:pointer;" id="inline-booking" onclick="openCalendly(event)">
