@@ -105,6 +105,25 @@
       .show-mobile-only { display: block !important; }
       section [style*="grid-template-columns:repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
     }
+  
+    /* task-558: Mobile readability overhaul */
+    @media (max-width: 768px) {
+      h1 { font-size: 1.625rem !important; line-height: 1.15 !important; }
+      section { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+      .hero-section h1 { font-size: 1.625rem !important; }
+      [style*="font-size:clamp(2.25rem"] { font-size: 1.625rem !important; line-height: 1.15 !important; }
+      [style*="font-size:clamp(1.05rem"] { font-size: 0.95rem !important; }
+      [style*="padding:4rem 2rem"] { padding: 2rem 1.25rem !important; }
+      [style*="padding:5rem 2rem"] { padding: 2.5rem 1.25rem !important; }
+      [style*="padding:6rem 2rem"] { padding: 3rem 1.25rem !important; }
+      .grid-auto { grid-template-columns: 1fr !important; gap: 1rem !important; }
+      .grid-2col { grid-template-columns: 1fr !important; gap: 1rem !important; }
+      .founding-box { padding: 1.5rem !important; }
+      .btn-primary { width: 100%; justify-content: center; font-size: 0.95rem !important; height: 3rem !important; }
+      input, select, textarea { width: 100% !important; min-height: 48px !important; font-size: 16px !important; }
+      button[type="submit"], .btn-primary { min-height: 48px !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -139,7 +158,7 @@
 
     <div style="max-width:760px;">
       <h1 style="font-size:clamp(2.25rem,5vw,3.75rem);line-height:1.1;font-weight:700;letter-spacing:-0.02em;margin-bottom:1.5rem;color:#f5f0e8;">
-        Your job costs are bleeding money right now. Your bookkeeper will find out next month, after you've already bid the next job wrong. <span style="color:#f59e0b;">JobLedger catches margin leaks the day they happen, not the day it's too late.</span>
+        Real-time job costing that catches margin leaks <span style="color:#f59e0b;">before your bookkeeper does.</span>
       </h1>
 
       <!-- dir-122: Scannable bullets replacing paragraph subheadline -->
@@ -182,6 +201,13 @@
       </div>
     </div>
   </section>
+
+  <!-- THE PROBLEM (pain narrative moved from hero — task-558) -->
+  <section id="the-problem" style="max-width:1120px;margin:0 auto;padding:3rem 2rem 0;">
+    <p style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#f59e0b;margin-bottom:1rem;font-family:'JetBrains Mono',monospace;">The Problem</p>
+    <p style="font-size:clamp(1.1rem,2.5vw,1.35rem);line-height:1.65;color:#94a8b8;max-width:680px;">Your job costs are bleeding money right now. Your bookkeeper will find out next month, after you've already bid the next job wrong. By then, you've already priced the next job using yesterday's bad numbers.</p>
+  </section>
+
 
   <!-- dir-122 improvement #3: Founder Credibility -->
   <section style="max-width:1120px;margin:0 auto;padding:0 2rem 3rem;">
