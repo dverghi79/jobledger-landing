@@ -12,7 +12,7 @@
 
   <!-- Vercel Analytics -->
   <script defer src="/_vercel/insights/script.js"></script>
-  <!-- Google Ads gtag — Consent Mode v2 -->
+  <!-- Google Ads gtag — loaded when user checks consent checkbox -->
   <script>
     var gtagLoaded = false;
     function loadGtag() {
@@ -20,6 +20,7 @@
       gtagLoaded = true;
       window.dataLayer = window.dataLayer || [];
       window.gtag = function(){dataLayer.push(arguments);};
+      // Google Consent Mode v2: default to denied (GDPR-safe)
       gtag('consent', 'default', {
         ad_storage: 'denied',
         analytics_storage: 'denied',
@@ -27,6 +28,7 @@
         ad_personalization: 'denied',
         wait_for_update: 500
       });
+      // If consent already granted, update immediately
       if (localStorage.getItem('cookie_consent') === 'accepted') {
         gtag('consent', 'update', {
           ad_storage: 'granted',
@@ -54,9 +56,12 @@
         });
       }
     }
+    // Load gtag on page load (in denied mode — GDPR safe, cookieless pings only)
     loadGtag();
+    // Restore consent state + show/hide consent bar
     document.addEventListener('DOMContentLoaded', function() {
-      if (localStorage.getItem('cookie_consent') === 'accepted') {
+      var consent = localStorage.getItem('cookie_consent');
+      if (consent === 'accepted') {
         grantConsent();
       }
     });
@@ -67,521 +72,482 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
 
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* ── Reset + Base ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', system-ui, sans-serif; background: #0f0d0a; color: #c4b8a8; line-height: 1.6; }
-    h1,h2,h3 { font-family: 'Space Grotesk', system-ui, sans-serif; color: #f5f0e8; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: #0f0d0a; color: #f5f0e8; margin: 0; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Space Grotesk', system-ui, sans-serif; }
     html { scroll-behavior: smooth; }
-    a { color: inherit; text-decoration: none; }
-
-    /* ── 6-step type scale (P1 #6) ── */
-    /* 14px / 16px / 20px / 24px / 32px / 48px */
-    .t-xs  { font-size: 0.875rem; } /* 14px */
-    .t-sm  { font-size: 1rem; }     /* 16px */
-    .t-md  { font-size: 1.25rem; }  /* 20px */
-    .t-lg  { font-size: 1.5rem; }   /* 24px */
-    .t-xl  { font-size: 2rem; }     /* 32px */
-    .t-2xl { font-size: 3rem; }     /* 48px */
-
-    /* ── Color tokens ── */
-    /* Headings: #f5f0e8 (~18:1 on #0f0d0a) */
-    /* Body: #c4b8a8 (~9:1 on #0f0d0a) — FIXED from #78716c (4:1) and #8b7355 */
-    /* Muted: #a0937f (~6:1 on #0f0d0a) */
-    /* Fine print: rgba(180,168,152,0.55) (~4.5:1) */
-    /* Accent: #f59e0b */
-
     .accent { color: #f59e0b; }
-    .text-muted { color: #a0937f; }
-    .text-fineprint { color: rgba(180,168,152,0.55); }
-
     .border-line { border-top: 1px solid #1e1a14; }
-    .wrap { max-width: 1120px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem; }
-
-    input, select { background: #16130e; border: 1px solid #2a241c; color: #f5f0e8; outline: none; border-radius: 0.375rem; font-size: 1rem; height: 3rem; padding: 0 1rem; width: 100%; }
-    input:focus, select:focus { border-color: rgba(245,158,11,0.5); box-shadow: 0 0 0 1px rgba(245,158,11,0.25); }
-    ::placeholder { color: #6b5f4f; }
+    input, select, textarea { background: #16130e; border: 1px solid #1e1a14; color: #f5f0e8; outline: none; border-radius: 0.375rem; }
+    input:focus, select:focus, textarea:focus { border-color: rgba(245,158,11,0.5); box-shadow: 0 0 0 1px rgba(245,158,11,0.25); }
+    ::placeholder { color: #8b7355; }
     select option { background: #16130e; }
-
-    .btn-primary {
-      background: #f59e0b; color: #0f0d0a; font-weight: 700; border-radius: 0.375rem;
-      padding: 0 2rem; height: 3rem; min-height: 48px; /* P1 #7: touch target */
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: 1rem; text-decoration: none; transition: background 0.15s;
-      font-family: 'Space Grotesk', sans-serif; border: none; cursor: pointer;
-    }
+    .card { background: #131009; border: 1px solid #1e1a14; border-radius: 0.5rem; }
+    .tag { background: transparent; border: 1px solid #1e1a14; color: #8b7355; font-family: monospace; font-size: 0.72rem; letter-spacing: 0.04em; padding: 0.3rem 0.65rem; border-radius: 0.25rem; }
+    .btn-primary { background: #f59e0b; color: #0f0d0a; font-weight: 700; border-radius: 0.375rem; padding: 0 2rem; height: 3rem; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; text-decoration: none; transition: background 0.15s; font-family: 'Space Grotesk', sans-serif; }
     .btn-primary:hover { background: #d97706; }
-
-    .btn-ghost {
-      color: #a0937f; padding: 0 1rem; height: 3rem; min-height: 48px;
-      display: inline-flex; align-items: center; font-size: 1rem;
-      text-decoration: none; transition: color 0.15s;
-    }
+    .btn-ghost { color: #8b7355; padding: 0 1rem; height: 3rem; display: inline-flex; align-items: center; font-size: 1rem; text-decoration: none; transition: color 0.15s; }
     .btn-ghost:hover { color: #f5f0e8; }
-
-    .card {
-      background: #131009; border: 1px solid #1e1a14; border-radius: 0.5rem; padding: 1.5rem;
-    }
-
-    .tag {
-      background: transparent; border: 1px solid #2a241c; color: #a0937f;
-      font-family: monospace; font-size: 0.875rem; letter-spacing: 0.03em;
-      padding: 0.4rem 0.75rem; border-radius: 0.25rem; display: inline-block;
-    }
-
-    .label {
-      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: #f59e0b; margin-bottom: 0.75rem;
-      font-family: 'Space Grotesk', monospace;
-    }
-
-    .step-icon {
-      width: 2.5rem; height: 2.5rem; background: rgba(245,158,11,0.1);
-      border-radius: 0.375rem; display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .founding-box {
-      border: 1px solid rgba(245,158,11,0.25); background: rgba(245,158,11,0.03);
-      border-radius: 0.5rem; padding: 2rem;
-    }
-
-    /* ── Sticky Header (P1 #7: touch target ≥44px) ── */
-    .sticky-header {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      background: rgba(15,13,10,0.88); backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid #1e1a14;
-    }
-    .sticky-header .inner {
-      max-width: 1120px; margin: 0 auto; padding: 0.5rem 2rem;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .sticky-header .btn-sm {
-      background: #f59e0b; color: #0f0d0a; font-weight: 700; border-radius: 0.375rem;
-      padding: 0.6rem 1.25rem; min-height: 44px; /* P1 #7 */
-      font-size: 0.875rem; text-decoration: none;
-      font-family: 'Space Grotesk', sans-serif; transition: background 0.15s;
-      white-space: nowrap; display: inline-flex; align-items: center;
-    }
-    .sticky-header .btn-sm:hover { background: #d97706; }
-
-    /* ── Grid ── */
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
-
-    /* ── Dashboard (fix P1 #5: heading color) ── */
-    .dash-frame { border-radius: 0.5rem; overflow: hidden; border: 1px solid #2a241c; box-shadow: 0 4px 24px rgba(0,0,0,0.25); }
-    .dash-bar { background: #1e1a14; padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
-    .dash-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .dash-url { flex: 1; background: #16130e; border-radius: 0.25rem; padding: 0.2rem 0.6rem; font-size: 0.75rem; color: #a0937f; text-align: center; }
-    .dash-body { background: #fafaf9; display: flex; min-height: 260px; font-family: 'DM Sans', system-ui, sans-serif; }
-    .dash-sidebar { width: 110px; flex-shrink: 0; background: #fff; border-right: 1px solid #e7e5e4; padding: 0.75rem 0.5rem; }
-    .dash-nav-item { padding: 0.3rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; color: #78716c; }
-    .dash-nav-active { color: #22c55e; font-weight: 600; background: rgba(34,197,94,0.1); }
-    .dash-stat { padding: 0.6rem; background: #fff; border: 1px solid #e7e5e4; border-radius: 0.375rem; }
-    .dash-stat-label { font-size: 0.75rem; color: #78716c; margin-bottom: 0.15rem; }
-    .dash-stat-value { font-size: 1.125rem; font-weight: 700; color: #1c1917; }
-    .dash-stat-sub { font-size: 0.75rem; color: #22c55e; margin-top: 0.1rem; }
-
-    /* ── Callout overlays ── */
-    .callout {
-      position: absolute; background: #f59e0b; color: #0f0d0a;
-      font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.65rem;
-      border-radius: 0.25rem; font-family: 'Space Grotesk', sans-serif;
-      white-space: nowrap; box-shadow: 0 2px 8px rgba(245,158,11,0.3);
-    }
-
-    /* ── Footer links (P1 #7: touch target) ── */
-    .footer-links a {
-      color: #a0937f; text-decoration: none; font-size: 0.875rem;
-      padding: 0.5rem 0; display: inline-block; min-height: 44px;
-      line-height: 44px; transition: color 0.15s;
-    }
-    .footer-links a:hover { color: #f5f0e8; }
-
-    /* ── Mobile ── */
+    .founding-box { border: 1px solid rgba(245,158,11,0.3); background: rgba(245,158,11,0.04); border-radius: 0.5rem; padding: 2.5rem; }
+    .step-icon { width: 2.25rem; height: 2.25rem; background: rgba(245,158,11,0.1); border-radius: 0.375rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    @media (max-width: 768px) { .hide-mobile { display: none !important; } }
+    .sticky-header { position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(15,13,10,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #1e1a14; }
+    .sticky-header .inner { max-width:1120px;margin:0 auto;padding:0.75rem 2rem;display:flex;align-items:center;justify-content:space-between; }
+    .sticky-header .btn-sm { background:#f59e0b;color:#0f0d0a;font-weight:700;border-radius:0.375rem;padding:0.4rem 1.25rem;font-size:0.85rem;text-decoration:none;font-family:'Space Grotesk',sans-serif;transition:background 0.15s;white-space:nowrap; }
+    .sticky-header .btn-sm:hover { background:#d97706; }
+    .integration-strip { display:flex;align-items:center;gap:2rem;flex-wrap:wrap;opacity:0.4; }
+    .integration-strip svg { height:24px;width:auto; }
+  
+    .show-mobile-only { display: none !important; }
     @media (max-width: 768px) {
-      .hide-mobile { display: none !important; }
-      .grid-3 { grid-template-columns: 1fr !important; }
-      .grid-2 { grid-template-columns: 1fr !important; gap: 2rem; }
-      .t-2xl { font-size: 1.75rem; }
-      .t-xl { font-size: 1.375rem; }
-      .t-lg { font-size: 1.25rem; }
-      section { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
-      .wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
-      .btn-primary { width: 100%; }
-      .founding-box { padding: 1.5rem !important; }
-      .dash-sidebar { display: none; }
-      .callout { display: none; }
-      .founder-cred { flex-direction: column; text-align: center; }
-      .founder-cred img { margin: 0 auto; }
+      .show-mobile-only { display: block !important; }
+      section [style*="grid-template-columns:repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
     }
+  
+    /* task-558: Mobile readability overhaul */
+    @media (max-width: 768px) {
+      h1 { font-size: 1.625rem !important; line-height: 1.15 !important; }
+      section { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+      .hero-section h1 { font-size: 1.625rem !important; }
+      [style*="font-size:clamp(2.25rem"] { font-size: 1.625rem !important; line-height: 1.15 !important; }
+      [style*="font-size:clamp(1.05rem"] { font-size: 0.95rem !important; }
+      [style*="padding:4rem 2rem"] { padding: 2rem 1.25rem !important; }
+      [style*="padding:5rem 2rem"] { padding: 2.5rem 1.25rem !important; }
+      [style*="padding:6rem 2rem"] { padding: 3rem 1.25rem !important; }
+      .grid-auto { grid-template-columns: 1fr !important; gap: 1rem !important; }
+      .grid-2col { grid-template-columns: 1fr !important; gap: 1rem !important; }
+      .founding-box { padding: 1.5rem !important; }
+      .btn-primary { width: 100%; justify-content: center; font-size: 0.95rem !important; height: 3rem !important; }
+      input, select, textarea { width: 100% !important; min-height: 48px !important; font-size: 16px !important; }
+      button[type="submit"], .btn-primary { min-height: 48px !important; }
+    }
+
   </style>
 </head>
 <body>
 
-  <!-- P2: semantic <nav> landmark -->
-  <nav class="sticky-header" aria-label="Main">
+  <!-- STICKY HEADER -->
+  <header class="sticky-header">
     <div class="inner">
       <div style="display:flex;align-items:center;gap:0.5rem;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
           <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
         </svg>
-        <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:#f5f0e8;">JobLedger</span>
+        <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:#f5f0e8;letter-spacing:-0.01em;">JobLedger</span>
       </div>
-      <!-- P2: Nav CTA copy changed from "Join the waitlist" -->
-      <a href="#waitlist" class="btn-sm">See Your Real Margin</a>
+      <a href="#waitlist" class="btn-sm">Join the waitlist</a>
     </div>
-  </nav>
-  <div style="height:3.5rem;"></div>
+  </header>
+  <!-- Spacer for fixed header -->
+  <div style="height:3.25rem;"></div>
 
-  <!-- ════════════════════════════════════════════
-       HERO
-       ════════════════════════════════════════════ -->
-  <main>
-  <section style="padding:3.5rem 0 3rem;">
-    <div class="wrap" style="max-width:760px;">
-      <div style="display:inline-flex;align-items:center;gap:0.5rem;border:1px solid #2a241c;border-radius:9999px;padding:0.35rem 0.75rem;margin-bottom:1.5rem;">
-        <span style="color:#f59e0b;">◆</span>
-        <span class="t-xs text-muted">Early Access — Construction Contractors</span>
-      </div>
+  <!-- HERO -->
+  <section style="max-width:1120px;margin:0 auto;padding:4rem 2rem 4rem;position:relative;">
+    <!-- Badge -->
+    <div style="display:inline-flex;align-items:center;gap:0.5rem;border:1px solid #1e1a14;border-radius:9999px;padding:0.375rem 0.75rem;color:#8b7355;font-size:0.8rem;margin-bottom:2rem;">
+      <span style="color:#f59e0b;">◆</span> Early Access — Construction Contractors and Trades
+    </div>
 
-      <h1 class="t-2xl" style="font-weight:700;letter-spacing:-0.02em;line-height:1.1;margin-bottom:1.25rem;">
-        Real-time job costing that catches margin leaks <span class="accent">before your bookkeeper does.</span>
+    <!-- CRO: Unfair Advantage killer line -->
+    <div style="display:inline-flex;align-items:center;gap:0.5rem;border:1px solid rgba(245,158,11,0.2);border-radius:0.25rem;padding:0.3rem 0.75rem;color:#f59e0b;font-size:0.8rem;margin-bottom:1rem;font-family:'JetBrains Mono',monospace;font-weight:600;">
+      Most contractors find out margins after the job ends. You'll know during the job.
+    </div>
+
+    <div style="max-width:760px;">
+      <h1 style="font-size:clamp(2.25rem,5vw,3.75rem);line-height:1.1;font-weight:700;letter-spacing:-0.02em;margin-bottom:1.5rem;color:#f5f0e8;">
+        Real-time job costing that catches margin leaks <span style="color:#f59e0b;">before your bookkeeper does.</span>
       </h1>
 
-      <ul style="list-style:none;margin-bottom:2rem;display:flex;flex-direction:column;gap:0.6rem;">
-        <li style="display:flex;align-items:center;gap:0.75rem;" class="t-sm">
-          <span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
+      <!-- dir-122: Scannable bullets replacing paragraph subheadline -->
+      <ul style="list-style:none;padding:0;margin:0 0 2.5rem;max-width:600px;display:flex;flex-direction:column;gap:0.75rem;">
+        <li style="display:flex;align-items:flex-start;gap:0.75rem;font-size:clamp(1.05rem,2vw,1.2rem);color:#94a8b8;line-height:1.6;">
+          <span style="margin-top:0.6rem;width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
           Upload invoices from photos, PDFs, or handwritten notes
         </li>
-        <li style="display:flex;align-items:center;gap:0.75rem;" class="t-sm">
-          <span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
-          AI maps every cost to the right job and cost code
+        <li style="display:flex;align-items:flex-start;gap:0.75rem;font-size:clamp(1.05rem,2vw,1.2rem);color:#94a8b8;line-height:1.6;">
+          <span style="margin-top:0.6rem;width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
+          AI maps every cost to the right job and the right cost code
         </li>
-        <li style="display:flex;align-items:center;gap:0.75rem;" class="t-sm">
-          <span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
-          Entries post to QuickBooks in 10 minutes a day
+        <li style="display:flex;align-items:flex-start;gap:0.75rem;font-size:clamp(1.05rem,2vw,1.2rem);color:#94a8b8;line-height:1.6;">
+          <span style="margin-top:0.6rem;width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
+          Entries post straight to QuickBooks in 10 minutes a day
         </li>
       </ul>
 
       <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
         <a href="#waitlist" class="btn-primary">See Your Real Job Margin Today</a>
-        <a href="#how" class="btn-ghost">How it works ↓</a>
+        <a href="#how-it-works" class="btn-ghost">See example job breakdown ↓</a>
+      </div>
+
+      <!-- CRO #3: Example cost breakdown preview -->
+      <div style="margin-top:2.5rem;max-width:560px;padding:1rem 1.25rem;border:1px solid rgba(245,158,11,0.15);border-radius:0.5rem;background:rgba(245,158,11,0.04);">
+        <p style="margin:0 0 0.35rem;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#f59e0b;font-family:'JetBrains Mono',monospace;">Example JobLedger Breakdown</p>
+        <p style="margin:0;font-size:0.9rem;color:#94a8b8;line-height:1.6;font-style:italic;">"<span style="color:#f5f0e8;font-weight:600;">Job: Patterson Renovation</span> — Estimated margin: 22% → Actual: 8% — Labor overrun + materials mispriced"</p>
+        <p style="margin:0.5rem 0 0;font-size:0.7rem;color:rgba(148,168,184,0.5);font-family:'JetBrains Mono',monospace;">Updated: Today, 2:30 PM · 4 invoices processed · 3 cost codes mapped</p>
+      </div>
+    </div>
+
+    <!-- Subtle accent (desktop only) -->
+    <div class="hide-mobile" style="position:absolute;right:2rem;top:50%;transform:translateY(-50%);width:240px;opacity:0.06;pointer-events:none;">
+      <div style="font-family:monospace;font-size:0.7rem;color:#f59e0b;line-height:2;">
+        <div>INV-4421 → Job 2204-A → CSI 03</div>
+        <div>INV-4422 → Job 2204-A → CSI 09</div>
+        <div>TS-0318 → Job 2187-B → CSI 05</div>
+        <div>INV-4423 → Job 2311-C → CSI 15</div>
+        <div style="color:#d97706;margin-top:0.5rem;">✓ 4 entries → QuickBooks</div>
       </div>
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════
-       DASHBOARD MOCKUP (P0 #2: product visual)
-       ════════════════════════════════════════════ -->
-  <section style="padding:0 0 3.5rem;">
-    <div class="wrap" style="position:relative;">
-      <p class="label">Product Preview</p>
-      <!-- P1 #5: Fixed heading color from #1c1917 → #f5f0e8 -->
-      <h2 class="t-lg" style="font-weight:700;letter-spacing:-0.01em;margin-bottom:0.4rem;">
-        Early preview of the JobLedger dashboard
-      </h2>
-      <p class="t-xs text-muted" style="margin-bottom:1.5rem;">See your real margins, not last quarter's guesses.</p>
+  <!-- THE PROBLEM (pain narrative moved from hero — task-558) -->
+  <section id="the-problem" style="max-width:1120px;margin:0 auto;padding:3rem 2rem 0;">
+    <p style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#f59e0b;margin-bottom:1rem;font-family:'JetBrains Mono',monospace;">The Problem</p>
+    <p style="font-size:clamp(1.1rem,2.5vw,1.35rem);line-height:1.65;color:#94a8b8;max-width:680px;">Your job costs are bleeding money right now. Your bookkeeper will find out next month, after you've already bid the next job wrong. By then, you've already priced the next job using yesterday's bad numbers.</p>
+  </section>
 
-      <div class="dash-frame">
-        <div class="dash-bar">
+
+  <!-- dir-122 improvement #3: Founder Credibility -->
+  <section style="max-width:1120px;margin:0 auto;padding:0 2rem 3rem;">
+    <div style="display:flex;align-items:center;gap:1.25rem;padding:1.25rem 1.5rem;border:1px solid #0f1f2e;border-radius:0.5rem;background:rgba(11,23,35,0.5);max-width:600px;">
+      <img src="https://leanaistudio.com/founder.jpeg" alt="Dario Verghi" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid rgba(245,158,11,0.3);" />
+      <div>
+        <p style="margin:0;font-size:1rem;font-weight:700;color:#e8f0f8;font-family:'Space Grotesk',sans-serif;">Built by Dario Verghi</p>
+        <p style="margin:0.2rem 0 0;font-size:0.875rem;color:#f59e0b;font-weight:600;">Former VP who built billing systems for 200+ field teams</p>
+        <p style="margin:0.35rem 0 0;font-size:0.85rem;color:#94a8b8;line-height:1.5;">I watched contractors lose thousands per job because cost data lived in three different systems and nobody reconciled until the job was done. By then, the profit was already gone. I built JobLedger so you see your real margin every day, not every quarter.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKS WITH -->
+  <section style="padding:0 2rem 3rem;">
+    <div style="max-width:1120px;margin:0 auto;">
+      <p style="font-size:0.7rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:rgba(74,64,48,0.45);margin-bottom:1.25rem;">Works with</p>
+      <div class="integration-strip">
+        <!-- QuickBooks logo -->
+        <svg viewBox="0 0 120 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:22px;">
+          <circle cx="14" cy="14" r="13" stroke="#f5f0e8" stroke-width="1.5" fill="none"/>
+          <path d="M8 9v10M8 14h5a3 3 0 0 0 0-6H8" stroke="#f5f0e8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="32" y="18" fill="#f5f0e8" font-family="'Space Grotesk',sans-serif" font-size="12" font-weight="600">QuickBooks</text>
+        </svg>
+        <!-- Xero logo -->
+        <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:22px;">
+          <text x="0" y="19" fill="#f5f0e8" font-family="'Space Grotesk',sans-serif" font-size="14" font-weight="700" letter-spacing="-0.02em">Xero</text>
+        </svg>
+        <!-- Sage logo -->
+        <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:22px;">
+          <text x="0" y="19" fill="#f5f0e8" font-family="'Space Grotesk',sans-serif" font-size="14" font-weight="700" letter-spacing="-0.02em">Sage</text>
+        </svg>
+        <!-- Excel logo -->
+        <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:22px;">
+          <text x="0" y="19" fill="#f5f0e8" font-family="'Space Grotesk',sans-serif" font-size="14" font-weight="700" letter-spacing="-0.02em">Excel</text>
+        </svg>
+      </div>
+
+        
+        
+</div>
+  </section>
+
+  
+  <!-- DASHBOARD MOCKUP — JobLedger -->
+  <section style="padding:3rem 2rem 4rem;">
+    <div style="max-width:1120px;margin:0 auto;position:relative;">
+      <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#f59e0b;font-family:'JetBrains Mono',monospace;margin-bottom:1rem;">Product Preview</p>
+      <h2 style="font-size:clamp(1.25rem,2.5vw,1.75rem);font-weight:700;letter-spacing:-0.015em;margin-bottom:0.5rem;color:#1c1917;">Early preview of the JobLedger dashboard</h2>
+      <p style="font-size:0.9rem;color:#78716c;margin-bottom:2rem;">Here's what we're building. Join the waitlist to get early access when we launch.</p>
+
+      <!-- Browser Chrome Frame -->
+      <div style="border-radius:0.5rem;overflow:hidden;border:1px solid #e5e5e5;box-shadow:0 4px 24px rgba(0,0,0,0.18);max-width:100%;">
+        <!-- Chrome Bar -->
+        <div style="background:#e5e5e5;padding:0.5rem 0.75rem;display:flex;align-items:center;gap:0.5rem;">
           <div style="display:flex;gap:0.35rem;">
-            <div class="dash-dot" style="background:#ff5f57;"></div>
-            <div class="dash-dot" style="background:#ffbd2e;"></div>
-            <div class="dash-dot" style="background:#28c840;"></div>
+            <div style="width:8px;height:8px;border-radius:50%;background:#ff5f57;"></div>
+            <div style="width:8px;height:8px;border-radius:50%;background:#ffbd2e;"></div>
+            <div style="width:8px;height:8px;border-radius:50%;background:#28c840;"></div>
           </div>
-          <div class="dash-url">app.jobledger.com/dashboard</div>
+          <div style="flex:1;background:#d4d4d4;border-radius:0.25rem;padding:0.2rem 0.6rem;font-size:0.5rem;color:#78716c;text-align:center;">app.jobledger.com/dashboard</div>
         </div>
 
-        <div class="dash-body">
-          <!-- Sidebar (desktop) -->
-          <div class="dash-sidebar hide-mobile">
-            <div style="font-weight:700;font-size:0.75rem;color:#22c55e;padding:0.3rem 0.5rem;margin-bottom:0.5rem;">JobLedger</div>
-            <div class="dash-nav-item dash-nav-active">Dashboard</div>
-            <div class="dash-nav-item">Jobs</div>
-            <div class="dash-nav-item">Time &amp; Cost</div>
-            <div class="dash-nav-item">Invoices</div>
-            <div class="dash-nav-item">Reports</div>
+        <!-- Dashboard Body -->
+        <div style="background:#fafaf9;display:flex;min-height:280px;font-family:'DM Sans',system-ui,sans-serif;">
+          <!-- Sidebar -->
+          <div style="width:120px;flex-shrink:0;background:#ffffff;border-right:1px solid #e7e5e4;padding:0.75rem 0.5rem;display:flex;flex-direction:column;gap:0.15rem;" class="hide-mobile">
+            <div style="font-weight:700;font-size:0.6rem;color:#22c55e;padding:0.3rem 0.6rem;margin-bottom:0.5rem;">JobLedger</div>
+            
+            <div style="padding:0.3rem 0.6rem;border-radius:0.25rem;font-size:0.5rem;color:#22c55e;font-weight:600;background:rgba(34,197,94,0.15);cursor:default;">Dashboard</div>
+            <div style="padding:0.3rem 0.6rem;border-radius:0.25rem;font-size:0.5rem;color:#78716c;font-weight:400;cursor:default;">Jobs</div>
+            <div style="padding:0.3rem 0.6rem;border-radius:0.25rem;font-size:0.5rem;color:#78716c;font-weight:400;cursor:default;">Time & Cost</div>
+            <div style="padding:0.3rem 0.6rem;border-radius:0.25rem;font-size:0.5rem;color:#78716c;font-weight:400;cursor:default;">Invoices</div>
+            <div style="padding:0.3rem 0.6rem;border-radius:0.25rem;font-size:0.5rem;color:#78716c;font-weight:400;cursor:default;">Reports</div>
           </div>
 
+          <!-- Main Content -->
           <div style="flex:1;padding:0.75rem;overflow:hidden;">
             <!-- Stat Cards -->
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:0.75rem;">
-              <div class="dash-stat">
-                <div class="dash-stat-label">Active Jobs</div>
-                <div class="dash-stat-value">23</div>
-                <div class="dash-stat-sub">7 closing this week</div>
+              
+            <div style="padding:0.75rem;background:#ffffff;border:1px solid #e7e5e4;border-radius:0.375rem;">
+              <div style="font-size:0.55rem;color:#78716c;margin-bottom:0.25rem;">Active Jobs</div>
+              <div style="font-size:1.1rem;font-weight:700;color:#1c1917;line-height:1.2;">23</div>
+              <div style="font-size:0.5rem;color:#22c55e;margin-top:0.15rem;">7 closing this week</div>
+            </div>
+            <div style="padding:0.75rem;background:#ffffff;border:1px solid #e7e5e4;border-radius:0.375rem;">
+              <div style="font-size:0.55rem;color:#78716c;margin-bottom:0.25rem;">Unbilled Hours</div>
+              <div style="font-size:1.1rem;font-weight:700;color:#1c1917;line-height:1.2;">142h</div>
+              <div style="font-size:0.5rem;color:#22c55e;margin-top:0.15rem;">$18,400 pending</div>
+            </div>
+            <div style="padding:0.75rem;background:#ffffff;border:1px solid #e7e5e4;border-radius:0.375rem;">
+              <div style="font-size:0.55rem;color:#78716c;margin-bottom:0.25rem;">Materials Cost</div>
+              <div style="font-size:1.1rem;font-weight:700;color:#1c1917;line-height:1.2;">$34.2K</div>
+              <div style="font-size:0.5rem;color:#22c55e;margin-top:0.15rem;">This month</div>
+            </div>
+            <div style="padding:0.75rem;background:#ffffff;border:1px solid #e7e5e4;border-radius:0.375rem;">
+              <div style="font-size:0.55rem;color:#78716c;margin-bottom:0.25rem;">Profit Margin</div>
+              <div style="font-size:1.1rem;font-weight:700;color:#1c1917;line-height:1.2;">31%</div>
+              <div style="font-size:0.5rem;color:#22c55e;margin-top:0.15rem;">+4% vs target</div>
+            </div>
+            </div>
+
+            <!-- Mini Chart + Table -->
+            <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:0.5rem;" class="hide-mobile">
+              <!-- Mini Bar Chart -->
+              <div style="background:#ffffff;border:1px solid #e7e5e4;border-radius:0.375rem;padding:0.6rem;">
+                <div style="font-size:0.5rem;color:#78716c;margin-bottom:0.4rem;">Weekly Activity</div>
+                <div style="display:flex;align-items:flex-end;gap:3%;height:60px;">
+                  <div style="width:8%;height:60%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div><div style="width:8%;height:45%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div><div style="width:8%;height:78%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div><div style="width:8%;height:52%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div><div style="width:8%;height:90%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div><div style="width:8%;height:68%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div><div style="width:8%;height:82%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:0.2rem;">
+                  <span style="font-size:0.4rem;color:#78716c;">Mon</span>
+                  <span style="font-size:0.4rem;color:#78716c;">Sun</span>
+                </div>
               </div>
-              <div class="dash-stat">
-                <div class="dash-stat-label">Unbilled Hours</div>
-                <div class="dash-stat-value">142h</div>
-                <div class="dash-stat-sub">$18,400 pending</div>
-              </div>
-              <div class="dash-stat">
-                <div class="dash-stat-label">Materials Cost</div>
-                <div class="dash-stat-value">$34.2K</div>
-                <div class="dash-stat-sub">This month</div>
-              </div>
-              <div class="dash-stat">
-                <div class="dash-stat-label">Profit Margin</div>
-                <div class="dash-stat-value">31%</div>
-                <div class="dash-stat-sub">+4% vs target</div>
+
+              <!-- Data Table -->
+              <div style="background:#ffffff;border:1px solid #e7e5e4;border-radius:0.375rem;padding:0.6rem;overflow:hidden;">
+                <div style="font-size:0.5rem;color:#78716c;margin-bottom:0.4rem;">Jobs Requiring Attention</div>
+                <table style="width:100%;border-collapse:collapse;">
+                  <thead><tr><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Job</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Client</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Budget Used</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Status</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Due</th></tr></thead>
+                  <tbody><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#1c1917;border-bottom:1px solid #e7e5e4;white-space:nowrap;">#1042 Kitchen Remodel</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Whitfield Res.</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">78%</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">On Track</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Apr 30</td></tr><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#1c1917;border-bottom:1px solid #e7e5e4;white-space:nowrap;">#1038 HVAC Install</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Pinnacle Office</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">92%</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Over Budget</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Apr 22</td></tr><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#1c1917;border-bottom:1px solid #e7e5e4;white-space:nowrap;">#1045 Roof Repair</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Morrison Home</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">45%</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Waiting Parts</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">May 8</td></tr><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#1c1917;border-bottom:1px solid #e7e5e4;white-space:nowrap;">#1041 Bathroom Reno</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Lake View Prop.</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">63%</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">In Progress</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">May 2</td></tr></tbody>
+                </table>
               </div>
             </div>
 
-            <!-- Mini Chart + Table (desktop) -->
-            <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:0.5rem;" class="hide-mobile">
-              <div style="background:#fff;border:1px solid #e7e5e4;border-radius:0.375rem;padding:0.6rem;">
-                <div style="font-size:0.75rem;color:#78716c;margin-bottom:0.4rem;">Weekly Activity</div>
-                <div style="display:flex;align-items:flex-end;gap:3%;height:55px;">
-                  <div style="width:8%;height:60%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div>
-                  <div style="width:8%;height:45%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div>
-                  <div style="width:8%;height:78%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div>
-                  <div style="width:8%;height:52%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div>
-                  <div style="width:8%;height:90%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div>
-                  <div style="width:8%;height:68%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div>
-                  <div style="width:8%;height:82%;background:#22c55e;opacity:0.6;border-radius:1px 1px 0 0;"></div>
-                </div>
-              </div>
-              <div style="background:#fff;border:1px solid #e7e5e4;border-radius:0.375rem;padding:0.6rem;overflow:hidden;">
-                <div style="font-size:0.75rem;color:#78716c;margin-bottom:0.4rem;">Jobs Requiring Attention</div>
+            <!-- Mobile: show table only -->
+            <div style="display:none;" class="show-mobile-only">
+              <div style="background:#ffffff;border:1px solid #e7e5e4;border-radius:0.375rem;padding:0.6rem;overflow-x:auto;">
+                <div style="font-size:0.5rem;color:#78716c;margin-bottom:0.4rem;">Jobs Requiring Attention</div>
                 <table style="width:100%;border-collapse:collapse;">
-                  <thead><tr>
-                    <th style="padding:0.3rem 0.4rem;font-size:0.75rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;">Job</th>
-                    <th style="padding:0.3rem 0.4rem;font-size:0.75rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;">Budget</th>
-                    <th style="padding:0.3rem 0.4rem;font-size:0.75rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;">Status</th>
-                  </tr></thead>
-                  <tbody>
-                    <tr><td style="padding:0.3rem 0.4rem;font-size:0.75rem;color:#1c1917;border-bottom:1px solid #e7e5e4;">#1042 Kitchen Remodel</td><td style="padding:0.3rem 0.4rem;font-size:0.75rem;color:#78716c;border-bottom:1px solid #e7e5e4;">78%</td><td style="padding:0.3rem 0.4rem;font-size:0.75rem;color:#22c55e;border-bottom:1px solid #e7e5e4;">On Track</td></tr>
-                    <tr><td style="padding:0.3rem 0.4rem;font-size:0.75rem;color:#1c1917;border-bottom:1px solid #e7e5e4;">#1038 HVAC Install</td><td style="padding:0.3rem 0.4rem;font-size:0.75rem;color:#78716c;border-bottom:1px solid #e7e5e4;">92%</td><td style="padding:0.3rem 0.4rem;font-size:0.75rem;color:#ef4444;border-bottom:1px solid #e7e5e4;">Over Budget</td></tr>
-                    <tr><td style="padding:0.3rem 0.4rem;font-size:0.75rem;color:#1c1917;">#1045 Roof Repair</td><td style="padding:0.3rem 0.4rem;font-size:0.75rem;color:#78716c;">45%</td><td style="padding:0.3rem 0.4rem;font-size:0.75rem;color:#f59e0b;">Waiting Parts</td></tr>
-                  </tbody>
+                  <thead><tr><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Job</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Client</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Budget Used</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Status</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#78716c;text-align:left;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Due</th></tr></thead>
+                  <tbody><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#1c1917;border-bottom:1px solid #e7e5e4;white-space:nowrap;">#1042 Kitchen Remodel</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Whitfield Res.</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">78%</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">On Track</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Apr 30</td></tr><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#1c1917;border-bottom:1px solid #e7e5e4;white-space:nowrap;">#1038 HVAC Install</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Pinnacle Office</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">92%</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Over Budget</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Apr 22</td></tr><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#1c1917;border-bottom:1px solid #e7e5e4;white-space:nowrap;">#1045 Roof Repair</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Morrison Home</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">45%</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Waiting Parts</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">May 8</td></tr><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#1c1917;border-bottom:1px solid #e7e5e4;white-space:nowrap;">#1041 Bathroom Reno</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">Lake View Prop.</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">63%</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">In Progress</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#78716c;border-bottom:1px solid #e7e5e4;white-space:nowrap;">May 2</td></tr></tbody>
                 </table>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Callout overlays (desktop) -->
-      <div class="callout hide-mobile" style="top:140px;right:40px;">True margin vs estimated</div>
-      <div class="callout hide-mobile" style="top:220px;left:200px;">Costs mapped to jobs automatically</div>
-      <div class="callout hide-mobile" style="bottom:60px;right:60px;">Overruns flagged instantly</div>
+    
+      <!-- Callout overlays (desktop only, positioned over dashboard) -->
+      <div class="hide-mobile" style="position:absolute;top:160px;right:40px;background:#f59e0b;color:#070d14;font-size:0.65rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:0.25rem;font-family:'Space Grotesk',sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(245,158,11,0.3);">True margin vs estimated</div>
+      <div class="hide-mobile" style="position:absolute;top:240px;left:220px;background:#f59e0b;color:#070d14;font-size:0.65rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:0.25rem;font-family:'Space Grotesk',sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(245,158,11,0.3);">Costs mapped to jobs automatically</div>
+      <div class="hide-mobile" style="position:absolute;bottom:80px;right:60px;background:#f59e0b;color:#070d14;font-size:0.65rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:0.25rem;font-family:'Space Grotesk',sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(245,158,11,0.3);">Overruns flagged instantly</div>
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════
-       FOUNDER CREDIBILITY
-       ════════════════════════════════════════════ -->
-  <section style="padding:0 0 3rem;">
-    <div class="wrap">
-      <div class="founder-cred" style="display:flex;align-items:center;gap:1.25rem;padding:1.25rem 1.5rem;border:1px solid #2a241c;border-radius:0.5rem;background:rgba(20,16,10,0.6);max-width:580px;">
-        <img src="https://leanaistudio.com/founder.jpeg" alt="Dario Verghi" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid rgba(245,158,11,0.3);" />
-        <div>
-          <p class="t-sm" style="font-weight:700;color:#f5f0e8;font-family:'Space Grotesk',sans-serif;margin-bottom:0.2rem;">Built by Dario Verghi</p>
-          <p class="t-xs accent" style="font-weight:600;margin-bottom:0.3rem;">Former VP who built billing systems for 200+ field teams</p>
-          <p class="t-xs" style="color:#c4b8a8;">I watched contractors lose thousands because cost data lived in three systems. JobLedger shows your real margin every day.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+      
+      
+  <!-- END DASHBOARD MOCKUP -->
 
-  <!-- ════════════════════════════════════════════
-       MID-PAGE CTA (P0 #3 + P2: reduce max CTA gap)
-       ════════════════════════════════════════════ -->
-  <section class="border-line" style="padding:3rem 0;">
-    <div class="wrap" style="text-align:center;">
-      <p class="t-md" style="font-weight:600;color:#f5f0e8;margin-bottom:0.5rem;">Stop guessing your margins. Start knowing.</p>
-      <p class="t-xs text-muted" style="margin-bottom:1.5rem;">Join 50 founding contractors getting early access.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;align-items:center;">
-        <a href="#waitlist" class="btn-primary">See Your Real Job Margin Today</a>
-        <a href="#" onclick="openCalendly(event)" class="btn-ghost" style="color:#f59e0b;">Book a call with the founder</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════════════════
-       PAIN (P0 #1: cut to tight grid)
-       ════════════════════════════════════════════ -->
-  <section style="padding:3.5rem 0;">
-    <div class="wrap">
-      <p class="label">The Problem</p>
-      <h2 class="t-xl" style="font-weight:700;letter-spacing:-0.015em;max-width:600px;margin-bottom:1rem;">
-        Your bookkeeper finds margin leaks weeks after the money is gone.
+<!-- PAIN SECTION -->
+  <section class="border-line" style="padding:5rem 2rem;">
+    <div style="max-width:1120px;margin:0 auto;">
+      <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#f59e0b;margin-bottom:1rem;">The problem</p>
+      <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;letter-spacing:-0.015em;max-width:660px;margin-bottom:1.25rem;color:#f5f0e8;">
+        That job you thought cleared 22% margin? Your bookkeeper just told you it was 8%. The invoice was 6 weeks ago. And it's too late to fix it.
       </h2>
-      <p class="t-sm" style="max-width:560px;margin-bottom:2.5rem;">
-        You finished a renovation and quoted 22% margin. Six weeks later, reconciliation found $14K in unbilled materials. The margin was 8%. You already bid the next job using those bad numbers.
+
+      <!-- dir-122 improvement #5: Aggressive pain subparagraph -->
+      <p style="font-size:1.05rem;color:#94a8b8;line-height:1.7;max-width:620px;margin-bottom:4rem;">
+        You finished the Patterson renovation and quoted 22% margin. Six weeks later, your bookkeeper reconciled the job and found $14K in unbilled materials and 3 change orders that never made it to the invoice. The margin was 8%. You already used those profits to bid the next job. This happens every quarter and you find out too late to fix it.
       </p>
 
-      <!-- P0 #1: 3-column icon grid, max 8 words per bullet -->
-      <div class="grid-3">
-        <div class="card" style="display:flex;align-items:flex-start;gap:1rem;">
-          <div class="step-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          </div>
-          <div>
-            <p class="t-sm" style="font-weight:600;color:#f5f0e8;margin-bottom:0.25rem;">Costs arrive weeks late</p>
-            <p class="t-xs text-muted">Reconciliation happens after the profit is gone.</p>
-          </div>
+      <div class="grid-auto" style="gap:3rem;">
+        <div>
+          <span style="display:block;font-family:monospace;font-size:0.8rem;color:rgba(245,158,11,0.45);margin-bottom:0.75rem;">01</span>
+          <p style="font-size:1rem;color:#8b7355;line-height:1.7;">
+            QuickBooks, Xero, FreshBooks — they handle general accounting fine. But they don't know what a CSI cost code is, can't track job profitability across change orders, and weren't built for how electricians, plumbers, or GCs actually invoice and estimate work. You end up with a shoebox of receipts and a spreadsheet that's always 3 weeks behind.
+          </p>
         </div>
-        <div class="card" style="display:flex;align-items:flex-start;gap:1rem;">
-          <div class="step-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          </div>
-          <div>
-            <p class="t-sm" style="font-weight:600;color:#f5f0e8;margin-bottom:0.25rem;">Next bid uses bad numbers</p>
-            <p class="t-xs text-muted">You underprice jobs because actuals are stale.</p>
-          </div>
+        <div>
+          <span style="display:block;font-family:monospace;font-size:0.8rem;color:rgba(245,158,11,0.45);margin-bottom:0.75rem;">02</span>
+          <p style="font-size:1rem;color:#8b7355;line-height:1.7;">
+            By the time your bookkeeper catches a coding mistake, the profit margin on that job is already gone. You underbid the next project because you don't know what the last one actually cost. For small construction companies, that's the difference between growing and going under.
+          </p>
         </div>
-        <div class="card" style="display:flex;align-items:flex-start;gap:1rem;">
-          <div class="step-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          </div>
-          <div>
-            <p class="t-sm" style="font-weight:600;color:#f5f0e8;margin-bottom:0.25rem;">ERPs cost more than rent</p>
-            <p class="t-xs text-muted">Procore and Sage are built for 50-person crews.</p>
-          </div>
+        <div>
+          <span style="display:block;font-family:monospace;font-size:0.8rem;color:rgba(245,158,11,0.45);margin-bottom:0.75rem;">03</span>
+          <p style="font-size:1rem;color:#8b7355;line-height:1.7;">
+            Construction ERP systems like Procore or Sage are built for 50-person operations. If you're a plumbing contractor with 3 crews or an electrician running 10 jobs, you're stuck between spreadsheets and software that costs more than your office rent.
+          </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════
-       HOW IT WORKS (P0 #1: tight grid, outcome-framed)
-       ════════════════════════════════════════════ -->
-  <section id="how" class="border-line" style="padding:3.5rem 0;">
-    <div class="wrap">
-      <p class="label">How it works</p>
-      <h2 class="t-xl" style="font-weight:700;letter-spacing:-0.015em;max-width:600px;margin-bottom:2rem;">
-        Upload invoices. Know your margin. Bid with real numbers.
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works" class="border-line" style="padding:5rem 2rem;">
+    <div style="max-width:1120px;margin:0 auto;">
+      <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#f59e0b;margin-bottom:1rem;">How it works</p>
+      <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;letter-spacing:-0.015em;max-width:620px;margin-bottom:1.25rem;color:#f5f0e8;">
+        Upload your invoices. Know your margin before the job closes. Bid the next one with real numbers.
       </h2>
 
-      <div class="grid-3">
-        <div class="card">
-          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+      <div class="grid-auto" style="gap:1.5rem;">
+        <div class="card" style="padding:2rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
             <div class="step-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             </div>
-            <span class="t-xs text-muted" style="font-family:monospace;text-transform:uppercase;letter-spacing:0.08em;">Step 1</span>
+            <span style="font-family:monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#8b7355;">Step 1</span>
           </div>
-          <h3 class="t-sm" style="font-weight:600;margin-bottom:0.4rem;">Drop in any invoice format</h3>
-          <p class="t-xs" style="color:#c4b8a8;">PDFs, photos, handwritten notes. AI extracts vendor, amount, and job references.</p>
+          <h3 style="font-size:1.05rem;font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">Know your real margin before the job ends</h3>
+          <p style="font-size:0.95rem;color:#8b7355;line-height:1.65;">Drop in PDFs, photos of receipts, or forward emails — even handwritten notes, blurry photos, and coffee-stained invoices. JobLedger extracts vendor, amount, date, line items, and job references from whatever format your subs and suppliers send you.</p>
         </div>
-        <div class="card">
-          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+        <div class="card" style="padding:2rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
             <div class="step-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
             </div>
-            <span class="t-xs text-muted" style="font-family:monospace;text-transform:uppercase;letter-spacing:0.08em;">Step 2</span>
+            <span style="font-family:monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#8b7355;">Step 2</span>
           </div>
-          <h3 class="t-sm" style="font-weight:600;margin-bottom:0.4rem;">Costs map to jobs automatically</h3>
-          <p class="t-xs" style="color:#c4b8a8;">CSI codes, custom codes, your system. Ambiguous items get flagged, never misclassified.</p>
+          <h3 style="font-size:1.05rem;font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">See what's eating your profit before it's gone</h3>
+          <p style="font-size:0.95rem;color:#8b7355;line-height:1.65;">JobLedger learns your job numbering and maps each invoice to the correct project and cost code — whether you use CSI divisions, custom codes, or your own system. Ambiguous items get flagged. Nothing is silently misclassified.</p>
         </div>
-        <div class="card">
-          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+        <div class="card" style="padding:2rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
             <div class="step-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
-            <span class="t-xs text-muted" style="font-family:monospace;text-transform:uppercase;letter-spacing:0.08em;">Step 3</span>
+            <span style="font-family:monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#8b7355;">Step 3</span>
           </div>
-          <h3 class="t-sm" style="font-weight:600;margin-bottom:0.4rem;">Posts to QuickBooks, margin updates live</h3>
-          <p class="t-xs" style="color:#c4b8a8;">Review, approve, done. Job profitability stays accurate. No more evening data entry.</p>
+          <h3 style="font-size:1.05rem;font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">Bid your next job with real numbers, not assumptions</h3>
+          <p style="font-size:0.95rem;color:#8b7355;line-height:1.65;">Review and approve, then entries post directly to your QuickBooks. Job profitability stays accurate, cash flow projections are reliable, and you stop spending evenings on data entry.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════
-       WAITLIST / CTA (P0 #3: now at ~55% depth)
-       ════════════════════════════════════════════ -->
-  <section id="waitlist" class="border-line" style="padding:3.5rem 0;">
-    <div class="wrap">
-      <div class="grid-2">
+  <!-- WHO FOR -->
+  <section class="border-line" style="padding:5rem 2rem;">
+    <div style="max-width:1120px;margin:0 auto;">
+      <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#f59e0b;margin-bottom:1rem;">Built for</p>
+      <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;letter-spacing:-0.015em;max-width:600px;margin-bottom:4rem;color:#f5f0e8;">
+        Small construction companies and specialty trade contractors
+      </h2>
+
+      <div class="grid-2col" style="gap:1.5rem;margin-bottom:2rem;">
+        <div class="card" style="padding:2rem;">
+          <span style="font-family:monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#8b7355;display:block;margin-bottom:1rem;">The estimating problem</span>
+          <h3 style="font-size:1.15rem;font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">Stop guessing if a job made money.</h3>
+          <p style="font-size:0.95rem;color:#8b7355;line-height:1.65;">When your accounting is 3 weeks behind, your estimates are based on gut feel. JobLedger keeps job costs current so your next bid reflects real numbers, not last quarter's guesses.</p>
+        </div>
+        <div class="card" style="padding:2rem;">
+          <span style="font-family:monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#8b7355;display:block;margin-bottom:1rem;">The cash flow problem</span>
+          <h3 style="font-size:1.15rem;font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">Bid with confidence, not assumptions.</h3>
+          <p style="font-size:0.95rem;color:#8b7355;line-height:1.65;">Real-time job costing means you see overruns before they become losses. Track costs by job, phase, and cost code, and manage cash flow across all your active projects.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:0.65rem;">
+        <span class="tag">Electricians</span>
+        <span class="tag">Plumbing contractors</span>
+        <span class="tag">General contractors</span>
+        <span class="tag">QuickBooks users</span>
+        <span class="tag">Small construction companies</span>
+        <span class="tag">MEP contractors</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAITLIST / CTA -->
+  <section id="waitlist" class="border-line" style="padding:5rem 2rem;">
+    <div style="max-width:1120px;margin:0 auto;">
+      <div class="grid-2col" style="gap:3rem 5rem;align-items:start;">
         <!-- Left copy -->
         <div>
-          <p class="label">Early access — limited spots</p>
-          <h2 class="t-xl" style="font-weight:700;letter-spacing:-0.02em;line-height:1.15;margin-bottom:1rem;">
-            We're onboarding 50 founding contractors.
+          <p style="font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#f59e0b;margin-bottom:1rem;">Early access · Limited founding member spots</p>
+          <h2 style="font-size:clamp(1.75rem,3.5vw,2.5rem);font-weight:700;letter-spacing:-0.02em;color:#f5f0e8;margin-bottom:1.25rem;line-height:1.2;">
+            We're onboarding 50 founding contractors. Here's what you get.
           </h2>
+          <p style="font-size:0.95rem;color:#8b7355;line-height:1.7;max-width:440px;margin-bottom:2rem;">
+            We are onboarding a small group of specialty trade contractors using QuickBooks to test JobLedger before full launch.
+          </p>
 
-          <p class="t-sm" style="font-weight:600;color:#f5f0e8;margin-bottom:0.75rem;">What you'll get:</p>
-          <div style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.5rem;">
-            <p style="display:flex;align-items:center;gap:0.6rem;margin:0;" class="t-xs">
-              <span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
-              Real-time job costing and margin tracking
-            </p>
-            <p style="display:flex;align-items:center;gap:0.6rem;margin:0;" class="t-xs">
-              <span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
-              Automatic cost-to-job mapping
-            </p>
-            <p style="display:flex;align-items:center;gap:0.6rem;margin:0;" class="t-xs">
-              <span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
-              Accurate QuickBooks entries, no manual work
-            </p>
+          <!-- dir-122: "What you'll get" value prop block -->
+          <p style="font-size:0.875rem;font-weight:600;color:#e8f0f8;margin-bottom:0.75rem;">What you'll get:</p>
+          <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.875rem;margin-bottom:1.5rem;">
+            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(232,240,248,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>Real-time job costing and margin tracking</p>
+            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(232,240,248,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>Automatic cost-to-job mapping</p>
+            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(232,240,248,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>Accurate QuickBooks entries without manual work</p>
           </div>
-          <p class="t-xs accent" style="font-weight:600;">First 50 get lifetime founding access and direct founder onboarding.</p>
-
-          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1.5rem;">
-            <span class="tag">Electricians</span>
-            <span class="tag">Plumbers</span>
-            <span class="tag">GCs</span>
-            <span class="tag">HVAC</span>
-            <span class="tag">QuickBooks users</span>
-          </div>
+          <p style="font-size:0.8rem;color:#f59e0b;font-weight:600;">First 50 contractors get lifetime founding access and direct founder onboarding. Once spots are filled, onboarding closes before launch.</p>
         </div>
 
         <!-- Form -->
         <div>
-          <div id="success-message" style="display:none;padding:2rem 0;">
-            <div style="width:3rem;height:3rem;background:rgba(245,158,11,0.1);border-radius:0.375rem;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+          <div id="success-message" style="display:none;padding:2.5rem 0;">
+            <div style="width:3rem;height:3rem;background:rgba(245,158,11,0.1);border-radius:0.375rem;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
-            <h2 class="t-lg" style="font-weight:700;margin-bottom:0.5rem;">You are on the list!</h2>
-            <p class="t-sm text-muted">We will email you when early access opens.</p>
+            <h2 style="font-size:1.5rem;font-weight:700;color:#f5f0e8;margin-bottom:0.75rem;">You are on the list!</h2>
+            <p style="font-size:0.95rem;color:#8b7355;line-height:1.65;margin:0;">We will email you when early access opens. Keep an eye on your inbox.</p>
           </div>
-
           <form id="signup-form" onsubmit="handleSubmit(event)" style="display:flex;flex-direction:column;gap:1.25rem;">
             <div>
-              <label class="t-xs" style="display:block;font-weight:500;color:#f5f0e8;margin-bottom:0.375rem;">Work email <span class="accent">*</span></label>
-              <input id="email" type="email" required placeholder="you@yourfirm.com" />
+              <label style="display:block;font-size:0.875rem;font-weight:500;color:#f5f0e8;margin-bottom:0.375rem;">Work email <span style="color:#f59e0b;">*</span></label>
+              <input id="email" type="email" required placeholder="you@yourfirm.com" style="width:100%;height:2.75rem;padding:0 1rem;font-size:1rem;box-sizing:border-box;" />
             </div>
+            <!-- CRO: Progressive disclosure step 2 (hidden until email submit) -->
             <div id="form-step-2" style="display:none;flex-direction:column;gap:1.25rem;">
-              <div>
-                <label class="t-xs" style="display:block;font-weight:500;color:#f5f0e8;margin-bottom:0.375rem;">First name</label>
-                <input id="first-name" type="text" placeholder="Alex" />
-              </div>
-              <div>
-                <label class="t-xs" style="display:block;font-weight:500;color:#f5f0e8;margin-bottom:0.375rem;">What's your trade?</label>
-                <select id="trade">
-                  <option value="" disabled selected>Select your trade…</option>
-                  <option value="electrician">Electrician</option>
-                  <option value="plumber">Plumber</option>
-                  <option value="general_contractor">General Contractor</option>
-                  <option value="hvac">HVAC</option>
-                  <option value="roofing">Roofing</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              <div>
-                <label class="t-xs" style="display:block;font-weight:500;color:#f5f0e8;margin-bottom:0.375rem;">How many active job sites?</label>
-                <select id="job-sites">
-                  <option value="" disabled selected>Select a range…</option>
-                  <option value="1-5">1 to 5</option>
-                  <option value="6-15">6 to 15</option>
-                  <option value="16-50">16 to 50</option>
-                  <option value="50+">More than 50</option>
-                </select>
-              </div>
+            <div>
+              <label style="display:block;font-size:0.875rem;font-weight:500;color:#f5f0e8;margin-bottom:0.375rem;">First name</label>
+              <input id="first-name" type="text" placeholder="Alex" style="width:100%;height:2.75rem;padding:0 1rem;font-size:1rem;box-sizing:border-box;" />
             </div>
-            <button type="submit" id="submit-btn" class="btn-primary" style="width:100%;">
+            <div>
+              <label style="display:block;font-size:0.875rem;font-weight:500;color:#f5f0e8;margin-bottom:0.375rem;">What's your trade?</label>
+              <select id="trade" style="width:100%;height:2.75rem;padding:0 1rem;font-size:1rem;box-sizing:border-box;appearance:auto;">
+                <option value="" disabled selected>Select your trade…</option>
+                <option value="electrician">Electrician</option>
+                <option value="plumber">Plumber</option>
+                <option value="general_contractor">General Contractor</option>
+                <option value="hvac">HVAC</option>
+                <option value="roofing">Roofing</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:0.875rem;font-weight:500;color:#e8f0f8;margin-bottom:0.375rem;">How many active job sites does your company manage?</label>
+              <select id="job-sites" style="width:100%;height:2.75rem;padding:0 1rem;font-size:1rem;box-sizing:border-box;appearance:auto;">
+                <option value="" disabled selected>Select a range…</option>
+                <option value="1-5">1 to 5</option>
+                <option value="6-15">6 to 15</option>
+                <option value="16-50">16 to 50</option>
+                <option value="50+">More than 50</option>
+              </select>
+            </div>
+            
+            </div>
+            <button type="submit" id="submit-btn" style="height:3rem;background:#f59e0b;color:#0f0d0a;font-weight:700;font-size:1rem;border:none;border-radius:0.375rem;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:background 0.15s;">
               See Your Real Job Margin Today
             </button>
-            <p class="t-xs text-fineprint" style="text-align:center;">By signing up you accept our <a href="/privacy.html" class="accent" style="text-decoration:underline;">Privacy Policy</a> and analytics cookies.</p>
-            <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem 1rem;border:1px solid rgba(255,255,255,0.08);border-radius:0.5rem;background:rgba(255,255,255,0.03);cursor:pointer;min-height:48px;" id="inline-booking" onclick="openCalendly(event)">
+            <p style="font-size:0.75rem;color:rgba(180,210,230,0.65);text-align:center;margin:0;">By signing up you accept our <a href="/privacy.html" style="color:#f59e0b;text-decoration:underline;">Privacy Policy</a> and analytics cookies. No spam — we will only contact you about JobLedger.</p>
+            <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1rem;padding:0.75rem 1rem;border:1px solid rgba(255,255,255,0.08);border-radius:0.5rem;background:rgba(255,255,255,0.03);cursor:pointer;" id="inline-booking" onclick="openCalendly(event)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <span class="t-xs accent" style="font-weight:600;">Book a call with the founder</span>
+              <span style="font-size:0.875rem;color:#f59e0b;font-weight:600;">Book a call with the founder</span>
             </div>
           </form>
         </div>
@@ -589,63 +555,43 @@
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════
-       WORKS WITH (compact, moved below form)
-       ════════════════════════════════════════════ -->
-  <section style="padding:2rem 0;">
-    <div class="wrap" style="text-align:center;">
-      <p class="t-xs text-fineprint" style="margin-bottom:1rem;">Works with</p>
-      <div style="display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap;opacity:0.35;">
-        <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.875rem;color:#f5f0e8;">QuickBooks</span>
-        <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.875rem;color:#f5f0e8;">Xero</span>
-        <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.875rem;color:#f5f0e8;">Sage</span>
-        <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.875rem;color:#f5f0e8;">Excel</span>
-      </div>
-    </div>
-  </section>
-  </main>
+  <!-- FOOTER -->
 
-  <!-- ════════════════════════════════════════════
-       INCUBATOR BADGE
-       ════════════════════════════════════════════ -->
-  <section style="padding:1.5rem 0;">
-    <div class="wrap" style="text-align:center;">
+  <!-- ============================================================
+       FOUNDER + INCUBATOR BADGE
+       ============================================================ -->
+  <section style="padding:2.5rem 2rem 0;">
+    <div style="max-width:1120px;margin:0 auto;text-align:center;">
       <div style="display:inline-flex;align-items:center;gap:1rem;padding:1rem 1.5rem;border:1px solid rgba(255,255,255,0.06);border-radius:0.5rem;background:rgba(255,255,255,0.02);">
-        <img src="https://leanaistudio.com/founder.jpeg" alt="Dario Verghi" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1px solid rgba(245,158,11,0.2);" />
+        <img src="https://leanaistudio.com/founder.jpeg" alt="Dario Verghi" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1px solid rgba(56,189,248,0.2);" />
         <div style="text-align:left;">
-          <p class="t-xs" style="color:#c4b8a8;margin-bottom:0.15rem;">A project by <a href="https://leanaistudio.com" target="_blank" rel="noopener" class="accent">LeanAI Studio</a>, built by <a href="https://www.linkedin.com/in/verghi/" target="_blank" rel="noopener" class="accent">Dario Verghi</a></p>
-          <p class="t-xs text-muted">We ship this if 50 people sign up.</p>
+          <p style="margin:0;font-size:0.875rem;color:#e8f0f8;font-weight:600;">A project by <a href="https://leanaistudio.com" target="_blank" rel="noopener" style="color:#f59e0b;text-decoration:none;">LeanAI Studio</a>, built by <a href="https://www.linkedin.com/in/verghi/" target="_blank" rel="noopener" style="color:#f59e0b;text-decoration:none;">Dario Verghi</a></p>
+          <p style="margin:0.25rem 0 0;font-size:0.8125rem;color:#94a8b8;line-height:1.5;">Building focused tools for underserved B2B niches. We ship this if 50 people sign up.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════
-       FOOTER (P1 #7: touch targets ≥44px)
-       ════════════════════════════════════════════ -->
-  <footer class="border-line" style="padding:2rem 0;">
-    <div class="wrap">
-      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1rem;">
+  <footer class="border-line" style="padding:2.5rem 2rem;">
+    <div style="max-width:1120px;margin:0 auto;">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:1.25rem;margin-bottom:1.25rem;">
         <div style="display:flex;align-items:center;gap:0.5rem;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.875rem;color:#f5f0e8;">JobLedger</span>
         </div>
-        <div class="footer-links" style="display:flex;flex-wrap:wrap;gap:1.5rem;">
-          <a href="mailto:info@leanaistudio.com">info@leanaistudio.com</a>
-          <a href="/privacy.html">Privacy Policy</a>
-          <a href="/terms.html">Terms of Service</a>
+        <div style="display:flex;flex-wrap:wrap;gap:1.5rem;font-size:0.75rem;color:rgba(74,64,48,0.65);">
+          <a href="mailto:info@leanaistudio.com" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='#8b7355'" onmouseout="this.style.color='rgba(74,64,48,0.65)'">info@leanaistudio.com</a>
+          <a href="/privacy.html" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='#8b7355'" onmouseout="this.style.color='rgba(74,64,48,0.65)'">Privacy Policy</a>
+          <a href="/terms.html" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='#8b7355'" onmouseout="this.style.color='rgba(74,64,48,0.65)'">Terms of Service</a>
         </div>
       </div>
-      <div style="border-top:1px solid #1e1a14;padding-top:0.75rem;">
-        <p class="t-xs text-fineprint" style="margin-bottom:0.15rem;">© 2026 LeanAI Studio srl — P.IVA/CF: 14561020968</p>
-        <p class="t-xs text-fineprint">JobLedger is a product of LeanAI Studio srl</p>
+      <div style="border-top:1px solid #1e1a14;padding-top:1rem;font-size:0.7rem;color:rgba(74,64,48,0.45);line-height:1.8;">
+        <p style="margin:0;">© 2026 LeanAI Studio srl — P.IVA/CF: 14561020968</p>
+        <p style="margin:0;">JobLedger is a product of LeanAI Studio srl</p>
       </div>
     </div>
   </footer>
 
-  <!-- ════════════════════════════════════════════
-       SCRIPTS
-       ════════════════════════════════════════════ -->
   <script>
     function getUTMParams() {
       var params = new URLSearchParams(window.location.search);
@@ -662,12 +608,14 @@
       if (formStep === 1) {
         formStep = 2;
         document.getElementById('form-step-2').style.display = 'flex';
+        document.getElementById('submit-btn').textContent = 'See Your Real Job Margin Today';
       }
     }
 
     async function handleSubmit(e) {
       e.preventDefault();
       if (formStep === 1) { showStep2(); return; }
+      // Grant consent on submit — user is voluntarily engaging, enable full tracking
       grantConsent();
       var btn = document.getElementById('submit-btn');
       btn.textContent = 'Joining...';
@@ -692,6 +640,7 @@
       };
       Object.assign(payload, utm);
 
+      // Slack alert via server-side proxy — webhook URL stored in Vercel env var SLACK_WEBHOOK_URL
       try {
         await fetch('/api/slack-notify', {
           method: 'POST',
@@ -700,6 +649,7 @@
         });
       } catch(ex) {}
 
+      // Google Sheet via server-side proxy — webhook URL stored in Vercel env var GOOGLE_SHEET_WEBHOOK_URL
       try {
         await fetch('/api/sheet-notify', {
           method: 'POST',
@@ -708,6 +658,7 @@
         });
       } catch(ex) {}
 
+      // Resend: contact creation + welcome email (RESEND_API_KEY env var in Vercel)
       try {
         await fetch('/api/resend-notify', {
           method: 'POST',
@@ -716,7 +667,9 @@
         });
       } catch(ex) {}
 
+      // Vercel Analytics waitlist-signup event
       try { if (window.va) window.va('event', { name: 'waitlist-signup', data: { product: 'JobLedger', source: 'JobLedger', traffic_source: utm.utm_source || 'direct' } }); } catch(ex) {}
+      // Google Ads conversion
       try { if (typeof gtag === 'function') gtag('event', 'conversion', { send_to: 'AW-18071371531/z6DhCLq9-JccEIv-jKlD', value: 1.0, currency: 'USD' }); } catch(ex) {}
 
       document.getElementById('signup-form').style.display = 'none';
@@ -728,17 +681,9 @@
   <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
   <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
   <style>
-    .founder-booking-badge {
-      position:fixed;bottom:24px;right:24px;z-index:9999;
-      display:flex;align-items:center;gap:8px;
-      padding:12px 20px;min-height:48px;
-      background:#1a1a2e;color:#fff;
-      border:1px solid rgba(255,255,255,0.15);border-radius:50px;
-      cursor:pointer;font-family:inherit;font-size:14px;font-weight:500;
-      box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:all 0.2s ease;text-decoration:none;
-    }
-    .founder-booking-badge:hover { transform:translateY(-2px);box-shadow:0 6px 28px rgba(0,0,0,0.4);background:#232340;color:#fff; }
-    .founder-booking-badge svg { width:18px;height:18px;flex-shrink:0; }
+    .founder-booking-badge{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;padding:12px 20px;background:#1a1a2e;color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:50px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:all 0.2s ease;text-decoration:none;}
+    .founder-booking-badge:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(0,0,0,0.4);background:#232340;color:#fff;}
+    .founder-booking-badge svg{width:18px;height:18px;flex-shrink:0;}
   </style>
   <a class="founder-booking-badge" id="floating-booking" href="#" onclick="openCalendly(event)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -747,20 +692,16 @@
   <script>
     var CALENDLY_URL='https://calendly.com/leanaistudio/30min';
     var PRODUCT_NAME='JobLedger';
-    var PRODUCT_SLUG='jobledger';
     function openCalendly(e) {
       e.preventDefault();
       grantConsent();
-      try { if (typeof gtag === 'function') gtag('event', 'conversion', { send_to: 'AW-18071371531/z6DhCLq9-JccEIv-jKlD', value: 1.0, currency: 'USD' }); } catch(ex) {}
-      try { if (window.va) window.va('event', { name: 'calendly-booking', data: { product: PRODUCT_SLUG } }); } catch(ex) {}
-      try { fetch('/api/sheet-notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'calendly-booking', product: PRODUCT_SLUG, source: 'calendly', submitted_at: new Date().toISOString() }) }); } catch(ex) {}
-      try { fetch('/api/resend-notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'calendly-booking', first_name: 'Calendly Booking', product: PRODUCT_SLUG }) }); } catch(ex) {}
       if (window.Calendly) {
-        Calendly.initPopupWidget({ url: CALENDLY_URL + '?utm_source=' + encodeURIComponent(PRODUCT_SLUG) + '&utm_medium=lp&utm_campaign=founder-call' });
+        Calendly.initPopupWidget({ url: CALENDLY_URL + '?utm_source=' + encodeURIComponent(document.title.split(' ')[0]) + '&utm_medium=lp&utm_campaign=founder-call' });
       }
       return false;
     }
   </script>
+  </div>
 
 </body>
 </html>
