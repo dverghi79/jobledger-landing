@@ -3,26 +3,31 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+  const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
   if (!webhookUrl) {
-    console.error('[slack-notify] SLACK_WEBHOOK_URL env var not set');
+    console.error('[sheet-notify] GOOGLE_SHEET_WEBHOOK_URL env var not set');
     return res.status(200).json({ ok: false, reason: 'not_configured' });
   }
+
+  const sheetSecret = process.env.SHEET_SECRET;
+  const payload = Object.assign({}, req.body, sheetSecret ? { secret: sheetSecret } : {});
 
   try {
     const r = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req.body),
+      body: JSON.stringify(payload),
     });
     const text = await r.text();
-    if (text !== 'ok') {
-      console.error('[slack-notify] Slack error:', text);
+    let json;
+    try { json = JSON.parse(text); } catch (e) { json = { raw: text }; }
+    if (json && json.ok === false) {
+      console.error('[sheet-notify] GAS error:', text);
       return res.status(200).json({ ok: false, reason: text });
     }
     return res.status(200).json({ ok: true });
   } catch (err) {
-    console.error('[slack-notify] fetch error:', err);
+    console.error('[sheet-notify] fetch error:', err);
     return res.status(200).json({ ok: false, reason: 'fetch_failed' });
   }
 };
