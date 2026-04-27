@@ -1293,24 +1293,38 @@
   <script>
     var CALENDLY_URL='https://calendly.com/leanaistudio/30min';
     function openCalendly(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       grantConsent();
-      // Google Ads conversion
+      // Google Ads conversion (fires on click intent)
       try { if (typeof gtag === 'function') gtag('event', 'conversion', { send_to: 'AW-18071371531/z6DhCLq9-JccEIv-jKlD', value: 1.0, currency: 'USD' }); } catch(ex) {}
       // Vercel Analytics event
       try { if (window.va) window.va('event', { name: 'calendly-booking', data: { product: 'jobledger' } }); } catch(ex) {}
-      // Log to Google Sheets
-      try { fetch('/api/sheet-notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'calendly-booking', product: 'jobledger', source: 'calendly', submitted_at: new Date().toISOString() }) }); } catch(ex) {}
-      // Log to Resend
-      try { fetch('/api/resend-notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'calendly-booking', first_name: 'Calendly Booking', product: 'jobledger' }) }); } catch(ex) {}
-      // Log to Slack
-      try { fetch('/api/slack-notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'calendly-booking', product: 'jobledger', source: 'calendly' }) }); } catch(ex) {}
       // Open Calendly popup with product-specific UTMs
       if (window.Calendly) {
         Calendly.initPopupWidget({ url: CALENDLY_URL + '?utm_source=' + encodeURIComponent('jobledger') + '&utm_medium=lp&utm_campaign=founder-call' });
       }
       return false;
     }
+
+    // Calendly event_scheduled listener: fires when booking is confirmed
+    // Captures real invitee name + email from Calendly widget postMessage
+    window.addEventListener('message', function(ev) {
+      if (!ev.data || ev.data.event !== 'calendly.event_scheduled') return;
+      var payload = ev.data.payload || {};
+      var invitee = payload.invitee || {};
+      var invEmail = invitee.email || 'calendly-booking';
+      var invName = invitee.name || '';
+      var slug = 'jobledger';
+      var displayName = 'JobLedger';
+      // Log to Google Sheets (always, even without email)
+      try { fetch('/api/sheet-notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: invEmail, first_name: invName, product: slug, source: 'calendly', submitted_at: new Date().toISOString() }) }); } catch(ex) {}
+      // Log to Resend (only if we got a real email)
+      if (invEmail && invEmail !== 'calendly-booking') {
+        try { fetch('/api/resend-notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: invEmail, first_name: invName, product: slug }) }); } catch(ex) {}
+      }
+      // Log to Slack with proper text field
+      try { fetch('/api/slack-notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: '*[' + displayName + ']* Calendly booking confirmed!\n*Email:* ' + invEmail + '\n*Name:* ' + (invName || 'n/a') + '\n*Source:* LP founder badge' }) }); } catch(ex) {}
+    });
   </script>
 
 </body>
