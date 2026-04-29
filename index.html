@@ -182,8 +182,6 @@
     @media (max-width: 768px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } }
 
     /* ── Stats ── */
-    .stat-number { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; color: var(--text-primary); font-variant-numeric: tabular-nums; }
-    .stat-number .counter { display: inline-block; }
 
     /* ── Accent section ── */
     .accent-section {
@@ -207,8 +205,6 @@
     /* ── Separator ── */
     .sep { width: 100%; height: 1px; background: var(--border); }
 
-    /* ── Founding box ── */
-    .founding-box { border: 1px solid rgba(245,158,11,0.2); background: rgba(245,158,11,0.03); border-radius: 16px; padding: 2.5rem; }
 
     /* ── Mobile helpers ── */
     .hide-mobile { }
@@ -250,37 +246,6 @@
     @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr !important; } }
 
     /* AHA MOMENT MORPHING ANIMATION */
-    .aha-wrap{max-width:900px;margin:0 auto;border-radius:16px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,0.5);background:#111113;}
-    .aha-chrome{background:#161618;padding:0.6rem 1rem;display:flex;align-items:center;gap:0.75rem;border-bottom:1px solid var(--border);}
-    .aha-dots span{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;}
-    .aha-status{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;padding:0.3rem 0.75rem;border-radius:8px;transition:all 0.6s ease;}
-    .aha-status.pain{background:rgba(239,68,68,0.12);color:#ef4444;}
-    .aha-status.syncing{background:rgba(168,85,247,0.12);color:#a855f7;}
-    .aha-status.done{background:rgba(34,197,94,0.12);color:#22c55e;}
-    .aha-body{padding:1.5rem 1.5rem 1rem;position:relative;}
-    .aha-caption{text-align:center;padding:0.75rem 0 1rem;font-size:1.1rem;font-weight:700;transition:all 0.5s ease;min-height:2.5rem;}
-    .aha-form{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;transition:all 0.8s ease;}
-    .aha-field{padding:0.6rem 0.75rem;border-radius:8px;font-size:0.75rem;font-family:'JetBrains Mono',monospace;transition:all 0.8s ease;position:relative;overflow:hidden;}
-    .aha-field-label{font-size:0.55rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem;transition:color 0.6s ease;}
-    .aha-field-value{font-size:0.8rem;font-weight:500;transition:color 0.6s ease;}
-    .aha-field.full{grid-column:1/-1;}
-    .aha-form.state-pain .aha-field{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);}
-    .aha-form.state-pain .aha-field-label{color:rgba(239,68,68,0.6);}
-    .aha-form.state-pain .aha-field-value{color:var(--text-muted);}
-    .aha-form.state-pain .aha-field.has-error{border-color:#ef4444;box-shadow:0 0 0 1px rgba(239,68,68,0.3);}
-    .aha-form.state-pain .aha-field.has-error .aha-field-value{color:#ef4444;text-decoration:line-through;}
-    .aha-form.state-syncing .aha-field{background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.15);}
-    .aha-form.state-syncing .aha-field-label{color:rgba(168,85,247,0.6);}
-    .aha-form.state-syncing .aha-field-value{color:#a855f7;}
-    .aha-form.state-done .aha-field{background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.18);}
-    .aha-form.state-done .aha-field-label{color:rgba(34,197,94,0.6);}
-    .aha-form.state-done .aha-field-value{color:var(--text-primary);}
-    .aha-form.state-done .aha-field.has-error{border-color:rgba(34,197,94,0.18);box-shadow:none;}
-    .aha-form.state-done .aha-field.has-error .aha-field-value{color:var(--text-primary);text-decoration:none;}
-    .aha-scan{height:2px;background:transparent;margin:0.75rem 0 0;border-radius:2px;overflow:hidden;position:relative;}
-    .aha-scan-bar{position:absolute;top:0;left:0;width:0;height:100%;border-radius:2px;transition:width 1.2s ease-in-out;}
-    .aha-timer-strip{display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:0.75rem;padding:0.5rem 0;font-family:'JetBrains Mono',monospace;font-size:0.75rem;transition:all 0.5s ease;min-height:2rem;}
-    @media (max-width:600px){.aha-form{grid-template-columns:1fr;}}
     /* ── Logical Closer ── */
     .closer-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;max-width:900px;margin:0 auto;}
     .closer-card{border-radius:16px;padding:2rem 1.75rem;}
@@ -322,21 +287,13 @@
     <div class="glow-orb" style="width:200px;height:200px;background:rgba(245,158,11,0.04);bottom:0;left:-50px;animation-delay:3s;"></div>
 
     <div class="container" style="position:relative;z-index:1;">
-      <div style="display:grid;grid-template-columns:1fr 380px;gap:3rem;align-items:center;" class="hero-grid">
-        <!-- Left: Copy -->
-        <div>
+      <div>
           <div class="reveal" style="margin-bottom:1.5rem;">
-            <div class="badge"><span class="dot"></span> Early Access — Construction Contractors</div>
+            <div class="badge"><span class="dot"></span> → Early Access Open · Limited spots</div>
           </div>
 
-          <div class="reveal reveal-delay-1" style="margin-bottom:0.75rem;">
-            <div style="display:inline-flex;align-items:center;gap:0.5rem;border:1px solid rgba(245,158,11,0.15);border-radius:8px;padding:0.35rem 0.75rem;color:var(--amber);font-size:0.8rem;font-family:'JetBrains Mono',monospace;font-weight:600;background:rgba(245,158,11,0.04);">
-              Most contractors find out margins after the job ends. You'll know during.
-            </div>
-          </div>
-
-          <h1 class="reveal reveal-delay-1" style="font-size:clamp(2.25rem,4.5vw,3.25rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:1.5rem;color:var(--text-primary);">
-            Real-time job costing that catches margin leaks <span class="gradient-text">before your bookkeeper does.</span>
+          <h1 class="reveal reveal-delay-1" id="hero-headline" data-default-headline="From shoebox of receipts to QuickBooks-ready job costs in 10 minutes." style="font-size:clamp(2.25rem,4.5vw,3.25rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:1.5rem;color:var(--text-primary);max-width:780px;">
+            From shoebox of receipts to <span class="gradient-text">QuickBooks-ready job costs</span> in 10 minutes.
           </h1>
 
           <div class="reveal reveal-delay-2" style="display:flex;flex-direction:column;gap:0.65rem;margin-bottom:2.5rem;max-width:600px;">
@@ -356,98 +313,11 @@
 
           <div class="reveal reveal-delay-3" style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
             <a href="#waitlist" class="btn-primary">
-              See Your Real Job Margin Today
+              Join the waitlist for early access
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
             <a href="#how-it-works" class="btn-ghost">See how it works ↓</a>
           </div>
-        </div>
-
-        <!-- Right: Phone mockup showing invoice upload -->
-        <div class="reveal-scale reveal-delay-2 hide-mobile" style="display:flex;justify-content:center;">
-          <div style="position:relative;">
-            <!-- Phone frame -->
-            <div style="width:260px;border-radius:32px;border:3px solid rgba(255,255,255,0.08);background:#111113;box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.04);overflow:hidden;">
-              <!-- Status bar -->
-              <div style="padding:0.6rem 1.25rem 0.35rem;display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-size:0.55rem;font-weight:600;color:var(--text-primary);">9:41</span>
-                <div style="display:flex;gap:0.3rem;align-items:center;">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--text-primary)"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.24 4.24 0 0 0-6 0zm-4-4l2 2a7.07 7.07 0 0 1 10 0l2-2C15.68 9.68 8.32 9.68 5 13z"/></svg>
-                  <svg width="14" height="10" viewBox="0 0 24 14" fill="var(--text-primary)"><rect x="0" y="2" width="20" height="10" rx="2" stroke="var(--text-primary)" stroke-width="1.5" fill="none"/><rect x="2" y="4" width="14" height="6" rx="1" fill="var(--text-primary)"/><rect x="21" y="5" width="2" height="4" rx="0.5" fill="var(--text-primary)" opacity="0.4"/></svg>
-                </div>
-              </div>
-              <!-- App header -->
-              <div style="padding:0.5rem 1rem 0.75rem;display:flex;align-items:center;justify-content:space-between;">
-                <div style="display:flex;align-items:center;gap:0.4rem;">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                  <span style="font-weight:800;font-size:0.75rem;color:var(--text-primary);">JobLedger</span>
-                </div>
-                <div style="width:24px;height:24px;border-radius:50%;background:var(--amber-glow);display:flex;align-items:center;justify-content:center;">
-                  <span style="font-size:0.45rem;font-weight:700;color:var(--amber);">DV</span>
-                </div>
-              </div>
-              <!-- Upload area -->
-              <div style="padding:0 0.85rem;">
-                <div style="border:2px dashed rgba(245,158,11,0.25);border-radius:14px;padding:1.5rem 1rem;text-align:center;background:rgba(245,158,11,0.03);margin-bottom:0.75rem;">
-                  <div style="width:2.5rem;height:2.5rem;border-radius:12px;background:var(--amber-glow);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.75" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  </div>
-                  <p style="margin:0;font-size:0.7rem;font-weight:600;color:var(--text-primary);">Upload invoice</p>
-                  <p style="margin:0.2rem 0 0;font-size:0.55rem;color:var(--text-muted);">Photo, PDF, or email forward</p>
-                </div>
-              </div>
-              <!-- Recent uploads -->
-              <div style="padding:0 0.85rem 0.5rem;">
-                <p style="font-size:0.5rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">Processed today</p>
-                <div style="display:flex;flex-direction:column;gap:0.4rem;">
-                  <div style="display:flex;align-items:center;gap:0.5rem;padding:0.55rem 0.65rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
-                    <div style="width:26px;height:26px;border-radius:6px;background:rgba(34,197,94,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <div style="flex:1;min-width:0;">
-                      <p style="margin:0;font-size:0.6rem;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">INV-4421 — ABC Supply Co.</p>
-                      <p style="margin:0;font-size:0.5rem;color:var(--text-muted);">→ Job #2204-A · CSI 03 · $2,340</p>
-                    </div>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:0.5rem;padding:0.55rem 0.65rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
-                    <div style="width:26px;height:26px;border-radius:6px;background:rgba(34,197,94,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <div style="flex:1;min-width:0;">
-                      <p style="margin:0;font-size:0.6rem;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">INV-4422 — Home Depot Pro</p>
-                      <p style="margin:0;font-size:0.5rem;color:var(--text-muted);">→ Job #2204-A · CSI 09 · $876</p>
-                    </div>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:0.5rem;padding:0.55rem 0.65rem;background:var(--surface);border:1px solid rgba(245,158,11,0.15);border-radius:10px;">
-                    <div style="width:26px;height:26px;border-radius:6px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    </div>
-                    <div style="flex:1;min-width:0;">
-                      <p style="margin:0;font-size:0.6rem;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">TS-0318 — Review needed</p>
-                      <p style="margin:0;font-size:0.5rem;color:var(--amber);">Ambiguous job ref · Tap to assign</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Bottom nav -->
-              <div style="padding:0.6rem 1rem;border-top:1px solid var(--border);display:flex;justify-content:space-around;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.75"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.75"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.75"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.75"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-              </div>
-            </div>
-            <!-- Glow behind phone -->
-            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:400px;background:radial-gradient(ellipse,rgba(245,158,11,0.08),transparent 70%);pointer-events:none;z-index:-1;"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Example breakdown (below grid on mobile, or full-width) -->
-      <div class="reveal reveal-delay-3" style="margin-top:2.5rem;max-width:560px;padding:1rem 1.25rem;border:1px solid rgba(245,158,11,0.12);border-radius:12px;background:rgba(245,158,11,0.03);backdrop-filter:blur(8px);">
-        <p style="margin:0 0 0.35rem;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--amber);font-family:'JetBrains Mono',monospace;">Example JobLedger Breakdown</p>
-        <p style="margin:0;font-size:0.9rem;color:var(--text-secondary);line-height:1.6;font-style:italic;">"<span style="color:var(--text-primary);font-weight:600;">Job: Patterson Renovation</span> — Estimated margin: 22% → Actual: 8% — Labor overrun + materials mispriced"</p>
-        <p style="margin:0.5rem 0 0;font-size:0.7rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">Updated: Today, 2:30 PM · 4 invoices processed · 3 cost codes mapped</p>
       </div>
     </div>
   </section>
@@ -467,116 +337,7 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════
-       KEY METRICS (moved near top — high-impact proof)
-       ═══════════════════════════════════════════ -->
-  <section style="padding:2rem 0 4rem;">
-    <div class="container">
-      <div class="grid-3" style="gap:1.25rem;">
-        <!-- Stat 1: 10 min/day -->
-        <div class="glass-card reveal reveal-delay-1" style="text-align:center;padding:2rem 1.5rem;">
-          <div style="width:3.25rem;height:3.25rem;border-radius:14px;background:var(--amber-glow);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          </div>
-          <div class="stat-number" style="margin-bottom:0.4rem;"><span class="counter" data-target="10">0</span> min/day</div>
-          <p style="font-size:0.9rem;color:var(--text-muted);margin:0;">Average time to process invoices</p>
-        </div>
-        <!-- Stat 2: $14K -->
-        <div class="glass-card reveal reveal-delay-2" style="text-align:center;padding:2rem 1.5rem;">
-          <div style="width:3.25rem;height:3.25rem;border-radius:14px;background:var(--amber-glow);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </div>
-          <div class="stat-number" style="margin-bottom:0.4rem;"><span class="counter" data-target="14" data-prefix="$" data-suffix="K">0</span></div>
-          <p style="font-size:0.9rem;color:var(--text-muted);margin:0;">Average hidden costs caught per quarter</p>
-        </div>
-        <!-- Stat 3: 6x faster -->
-        <div class="glass-card reveal reveal-delay-3" style="text-align:center;padding:2rem 1.5rem;">
-          <div style="width:3.25rem;height:3.25rem;border-radius:14px;background:var(--amber-glow);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          </div>
-          <div class="stat-number" style="margin-bottom:0.4rem;"><span class="counter" data-target="6" data-suffix="x">0</span> faster</div>
-          <p style="font-size:0.9rem;color:var(--text-muted);margin:0;">Than manual bookkeeping reconciliation</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ═══════════════════════════════════════════
-       AHA MOMENT - MORPHING STATE MACHINE
-       ═══════════════════════════════════════════ -->
-  <section style="padding:3rem 0 5rem;">
-    <div class="container">
-      <p class="section-label reveal">The Reality Check</p>
-
-      <div class="reveal-scale" style="margin-top:2rem;">
-        <div class="aha-wrap">
-          <!-- Chrome bar -->
-          <div class="aha-chrome">
-            <div class="aha-dots">
-              <span style="background:#ff5f57;"></span>
-              <span style="background:#ffbd2e;"></span>
-              <span style="background:#28c840;"></span>
-            </div>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);margin-left:0.5rem;">app.jobledger.com</span>
-            <div class="aha-status pain state-pain" style="opacity:1;" id="aha-status">GUESSING</div>
-          </div>
-
-          <!-- Body -->
-          <div class="aha-body">
-            <!-- Caption -->
-            <div class="aha-caption" id="aha-caption">
-              Job's done. Now find out if you actually made money.
-            </div>
-
-            <!-- Form fields morphing -->
-            <div class="aha-form state-pain" id="aha-form">
-              <!-- Row 1 -->
-              <div class="aha-field has-error">
-                <div class="aha-field-label">Labor</div>
-                <div class="aha-field-value">Crew hours on sticky notes</div>
-              </div>
-              <div class="aha-field has-error">
-                <div class="aha-field-label">Materials</div>
-                <div class="aha-field-value">Receipts in a shoebox</div>
-              </div>
-              <!-- Row 2 -->
-              <div class="aha-field has-error">
-                <div class="aha-field-label">Change Orders</div>
-                <div class="aha-field-value">Verbal agreement — never invoiced</div>
-              </div>
-              <div class="aha-field has-error">
-                <div class="aha-field-label">Budget vs Actual</div>
-                <div class="aha-field-value">No idea until the job is done</div>
-              </div>
-              <!-- Row 3 (full) -->
-              <div class="aha-field has-error full">
-                <div class="aha-field-label">QB Sync</div>
-                <div class="aha-field-value">Bookkeeper enters everything manually</div>
-              </div>
-              <div class="aha-field has-error full">
-                <div class="aha-field-label">Portfolio</div>
-                <div class="aha-field-value">Which jobs are making money? No clue</div>
-              </div>
-            </div>
-
-            <!-- Scan bar and timer -->
-            <div class="aha-scan">
-              <div class="aha-scan-bar" id="aha-scan-bar" style="background:rgba(239,68,68,0.4);"></div>
-            </div>
-            <div class="aha-timer-strip" id="aha-timer">
-              ⏱ Find out profit 60 days after job closes
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Trigger buttons (hidden, controlled by JS) -->
-      <div style="text-align:center;margin-top:2rem;display:none;" id="aha-controls">
-        <button onclick="triggerAhaState('syncing')" style="background:rgba(168,85,247,0.15);color:#a855f7;border:1px solid rgba(168,85,247,0.3);padding:0.6rem 1.25rem;border-radius:8px;font-size:0.85rem;font-weight:600;margin-right:0.75rem;cursor:pointer;">Start Syncing</button>
-        <button onclick="triggerAhaState('done')" style="background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.3);padding:0.6rem 1.25rem;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;">Mark Done</button>
-      </div>
-    </div>
-  </section>
 
   <!-- ═══════════════════════════════════════════
        LOGICAL CLOSER - OLD WAY VS JOBLEDGER
@@ -1001,31 +762,37 @@
       <div class="grid-2" style="gap:3rem 5rem;align-items:start;">
         <!-- Left copy -->
         <div>
-          <p class="section-label reveal">Early access · Limited founding member spots</p>
+          <p class="section-label reveal">EARLY ACCESS · LIMITED SPOTS</p>
           <h2 class="reveal section-title" style="margin-bottom:1.25rem;line-height:1.2;">
-            We're onboarding <span class="gradient-text">50 founding contractors.</span> Here's what you get.
+            Be among the first to use <span class="gradient-text">JobLedger.</span>
           </h2>
           <p class="reveal" style="font-size:0.95rem;color:var(--text-secondary);line-height:1.7;max-width:440px;margin-bottom:2rem;">
-            We are onboarding a small group of specialty trade contractors using QuickBooks to test JobLedger before full launch.
+            We are onboarding a small group of contractors to test JobLedger before full launch. Join the waitlist and be the first to know when early access opens.
           </p>
 
           <div class="reveal">
-            <p style="font-size:0.875rem;font-weight:700;color:var(--text-primary);margin-bottom:0.75rem;">What you'll get:</p>
             <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.875rem;margin-bottom:1.5rem;">
               <p style="display:flex;align-items:center;gap:0.625rem;color:var(--text-secondary);margin:0;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-                Real-time job costing and margin tracking
+                Free during early access
               </p>
               <p style="display:flex;align-items:center;gap:0.625rem;color:var(--text-secondary);margin:0;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-                Automatic cost-to-job mapping
+                Your feedback shapes the product
               </p>
               <p style="display:flex;align-items:center;gap:0.625rem;color:var(--text-secondary);margin:0;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-                Accurate QuickBooks entries without manual work
+                No credit card required
+              </p>
+              <p style="display:flex;align-items:center;gap:0.625rem;color:var(--text-secondary);margin:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                First to know when we launch
+              </p>
+              <p style="display:flex;align-items:center;gap:0.625rem;color:var(--text-secondary);margin:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Get a sample QuickBooks job-cost report from your last 3 invoices
               </p>
             </div>
-            <p style="font-size:0.8rem;color:var(--amber);font-weight:600;">First 50 contractors get lifetime founding access and direct founder onboarding.</p>
           </div>
         </div>
 
@@ -1072,7 +839,7 @@
               </div>
             </div>
             <button type="submit" id="submit-btn" class="btn-primary" style="width:100%;border:none;cursor:pointer;">
-              See Your Real Job Margin Today
+              Join the waitlist for early access
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </button>
             <p style="font-size:0.75rem;color:var(--text-muted);text-align:center;margin:0;">By signing up you accept our <a href="/privacy.html" style="color:var(--amber);text-decoration:underline;">Privacy Policy</a> and analytics cookies.</p>
@@ -1143,32 +910,13 @@
         reveals.forEach(function(el) { el.classList.add('visible'); });
       }
 
-      /* ── Animated counters ── */
-      var counters = document.querySelectorAll('.counter');
-      var counterObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            var el = entry.target;
-            var target = parseInt(el.dataset.target);
-            var prefix = el.dataset.prefix || '';
-            var suffix = el.dataset.suffix || '';
-            var duration = 1500;
-            var start = 0;
-            var startTime = null;
-            function animate(timestamp) {
-              if (!startTime) startTime = timestamp;
-              var progress = Math.min((timestamp - startTime) / duration, 1);
-              var eased = 1 - Math.pow(1 - progress, 3);
-              var current = Math.round(start + (target - start) * eased);
-              el.textContent = prefix + current + suffix;
-              if (progress < 1) requestAnimationFrame(animate);
-            }
-            requestAnimationFrame(animate);
-            counterObserver.unobserve(el);
-          }
-        });
-      }, { threshold: 0.5 });
-      counters.forEach(function(el) { counterObserver.observe(el); });
+      /* ── DKI headline replacement ── */
+      var params = new URLSearchParams(window.location.search);
+      var customHL = params.get('headline');
+      if (customHL) {
+        var heroEl = document.getElementById('hero-headline');
+        if (heroEl) heroEl.textContent = decodeURIComponent(customHL);
+      }
     });
 
     /* ── Form logic (unchanged functionality) ── */
@@ -1220,72 +968,6 @@
       document.getElementById('success-message').style.display = 'block';
     }
 
-    /* ── Aha Moment State Machine ── */
-    function triggerAhaState(state) {
-      var form = document.getElementById('aha-form');
-      var status = document.getElementById('aha-status');
-      var caption = document.getElementById('aha-caption');
-      var timer = document.getElementById('aha-timer');
-      var scanBar = document.getElementById('aha-scan-bar');
-      var fields = form.querySelectorAll('.aha-field');
-
-      // Remove previous state class
-      form.classList.remove('state-pain', 'state-syncing', 'state-done');
-      status.classList.remove('pain', 'syncing', 'done');
-
-      if (state === 'syncing') {
-        form.classList.add('state-syncing');
-        status.classList.add('syncing');
-        status.textContent = 'TRACKING';
-        caption.textContent = 'JobLedger tracking labor, materials, and change orders…';
-        timer.textContent = '⟳ Tracking labor · materials · change orders…';
-        scanBar.style.background = 'rgba(168,85,247,0.4)';
-
-        // Update field values to syncing state
-        fields[0].querySelector('.aha-field-value').textContent = '$12,840 labor · 4 crews · 312 hrs tracked';
-        fields[1].querySelector('.aha-field-value').textContent = '$28,450 materials · 47 POs · all coded';
-        fields[2].querySelector('.aha-field-value').textContent = 'CO #7: +$4,200 framing · approved · billed';
-        fields[3].querySelector('.aha-field-value').textContent = '$41,290 / $45,000 budget · 8.2% margin';
-        fields[4].querySelector('.aha-field-value').textContent = 'Synced to QuickBooks · job-coded · WIP updated';
-        fields[5].querySelector('.aha-field-value').textContent = '14 active jobs · $612K revenue · avg 11.3% margin';
-
-        // Animate scan bar
-        scanBar.style.width = '50%';
-        setTimeout(function() { scanBar.style.width = '100%'; }, 200);
-
-      } else if (state === 'done') {
-        form.classList.add('state-done');
-        status.classList.add('done');
-        status.textContent = 'PROFITABLE';
-        caption.textContent = 'Real-time P&L for every job. No surprises at close-out.';
-        timer.textContent = '✓ 14 jobs tracked · $612K revenue · real-time margins';
-        scanBar.style.background = 'rgba(34,197,94,0.4)';
-        scanBar.style.width = '100%';
-
-        // Mark fields as complete (remove error state)
-        fields.forEach(function(field) {
-          field.classList.remove('has-error');
-        });
-      }
-    }
-
-    // Auto-trigger animation on scroll into view
-    document.addEventListener('DOMContentLoaded', function() {
-      var ahaWrap = document.querySelector('.aha-wrap');
-      if (ahaWrap && 'IntersectionObserver' in window) {
-        var ahaObserver = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              // Trigger sequence: pain → syncing → done
-              setTimeout(function() { triggerAhaState('syncing'); }, 800);
-              setTimeout(function() { triggerAhaState('done'); }, 2400);
-              ahaObserver.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.3 });
-        ahaObserver.observe(ahaWrap);
-      }
-    });
   </script>
 
   <!-- Calendly -->
