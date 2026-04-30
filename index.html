@@ -13,13 +13,15 @@
   <!-- Vercel Analytics -->
   <script defer src="/_vercel/insights/script.js"></script>
 
-  <!-- Microsoft Clarity — consent-gated (matches region-based gtag model) -->
+  <!-- Microsoft Clarity — deferred until after first paint (LCP fix) -->
   <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "wibqf3uimd");
+    window.addEventListener('load', function(){
+      (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "wibqf3uimd");
+    });
   </script>
   <!-- Google Ads gtag — loaded when user checks consent checkbox -->
   <script>
@@ -82,10 +84,12 @@
     });
   </script>
 
-  <!-- Fonts -->
+  <!-- Fonts — non-render-blocking (LCP fix: preload + media swap) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" /></noscript>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -974,9 +978,7 @@
 
   </script>
 
-  <!-- Calendly -->
-  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
-  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+  <!-- Calendly — lazy-loaded on first click (LCP fix: no upfront CSS/JS) -->
   <style>
     .founder-booking-badge{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;padding:12px 20px;background:rgba(17,17,19,0.9);color:#fff;border:1px solid var(--border);border-radius:14px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,0.4);transition:all 0.3s;text-decoration:none;backdrop-filter:blur(12px);}
     .founder-booking-badge:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,0.5);border-color:rgba(245,158,11,0.2);color:#fff;}
@@ -988,6 +990,20 @@
   </a>
   <script>
     var CALENDLY_URL='https://calendly.com/leanaistudio/30min';
+    var calendlyLoaded = false;
+    function loadCalendly(cb) {
+      if (calendlyLoaded) { if (cb) cb(); return; }
+      calendlyLoaded = true;
+      var css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = 'https://assets.calendly.com/assets/external/widget.css';
+      document.head.appendChild(css);
+      var js = document.createElement('script');
+      js.src = 'https://assets.calendly.com/assets/external/widget.js';
+      js.async = true;
+      js.onload = function() { if (cb) cb(); };
+      document.head.appendChild(js);
+    }
     function openCalendly(e) {
       if (e) e.preventDefault();
       grantConsent();
@@ -995,10 +1011,12 @@
       try { if (typeof gtag === 'function') gtag('event', 'conversion', { send_to: 'AW-18071371531/z6DhCLq9-JccEIv-jKlD', value: 1.0, currency: 'USD' }); } catch(ex) {}
       // Vercel Analytics event
       try { if (window.va) window.va('event', { name: 'calendly-booking', data: { product: 'jobledger' } }); } catch(ex) {}
-      // Open Calendly popup with product-specific UTMs
-      if (window.Calendly) {
-        Calendly.initPopupWidget({ url: CALENDLY_URL + '?utm_source=' + encodeURIComponent('jobledger') + '&utm_medium=lp&utm_campaign=founder-call' });
-      }
+      // Lazy-load Calendly assets, then open popup
+      loadCalendly(function() {
+        if (window.Calendly) {
+          Calendly.initPopupWidget({ url: CALENDLY_URL + '?utm_source=' + encodeURIComponent('jobledger') + '&utm_medium=lp&utm_campaign=founder-call' });
+        }
+      });
       return false;
     }
 
