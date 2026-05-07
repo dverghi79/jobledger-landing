@@ -36,6 +36,7 @@ module.exports = async function handler(req, res) {
     // Pass product name as source so Resend audience shows where each contact came from
     contactPayload.properties = {
       source: productName,
+      product: productName,
       signed_up_at: new Date().toISOString(),
     };
     if (audienceId) {
