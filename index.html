@@ -266,7 +266,8 @@
     /* ── Grids ── */
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
     .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
-    @media (max-width: 768px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; } }
+    .hiw-grid { grid-template-columns: 1fr auto 1fr auto 1fr; gap: 0.75rem; }
+    @media (max-width: 768px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } .hiw-grid { grid-template-columns: 1fr; gap: 1.25rem; } .stats-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; } }
 
     /* ── Hero grid ── */
     .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; max-width: 1120px; }
@@ -795,33 +796,28 @@
       </div>
 
       <div class="grid-3" style="margin-top:3rem;">
-        <div class="glass-card reveal reveal-delay-1" style="padding:0;overflow:hidden;">
-          <div style="border-radius:0;overflow:hidden;max-height:180px;">
-            <img src="images/problem-1.png" alt="Frustrated bookkeeper dealing with duplicate data entry between construction systems" style="width:100%;height:auto;display:block;object-fit:cover;" loading="lazy" />
+        <div class="glass-card reveal reveal-delay-1" style="padding:1.5rem;overflow:hidden;">
+          <div style="width:3.5rem;height:3.5rem;border-radius:14px;background:rgba(239,68,68,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
           </div>
-          <div style="padding:1.5rem;">
-            <h3 style="font-size:1.05rem;font-weight:700;color:var(--text-primary);margin-bottom:0.5rem;">Double entry, double errors</h3>
-            <p style="color:var(--text-secondary);line-height:1.65;font-size:0.95rem;">Every job cost gets typed into Procore, then retyped into QuickBooks. One wrong class code and the entire job cost report is off. Your team spends hours fixing entries that should never have been wrong.</p>
-          </div>
+          <h3 style="font-size:1.05rem;font-weight:700;color:var(--text-primary);margin-bottom:0.5rem;">Double entry, double errors</h3>
+          <p style="color:var(--text-secondary);line-height:1.65;font-size:0.95rem;">Every job cost gets typed into Procore, then retyped into QuickBooks. One wrong class code and the entire job cost report is off. Your team spends hours fixing entries that should never have been wrong.</p>
         </div>
 
-        <div class="glass-card reveal reveal-delay-2" style="padding:0;overflow:hidden;">
-          <div style="border-radius:0;overflow:hidden;max-height:180px;">
-            <img src="images/problem-2.png" alt="Mismatched cost code spreadsheets between Procore and QuickBooks" style="width:100%;height:auto;display:block;object-fit:cover;" loading="lazy" />
+        <div class="glass-card reveal reveal-delay-2" style="padding:1.5rem;overflow:hidden;">
+          <div style="width:3.5rem;height:3.5rem;border-radius:14px;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>
           </div>
-          <div style="padding:1.5rem;">
-            <h3 style="font-size:1.05rem;font-weight:700;color:var(--text-primary);margin-bottom:0.5rem;">Cost codes never match</h3>
-            <p style="color:var(--text-secondary);line-height:1.65;font-size:0.95rem;">Procore uses one numbering system. QuickBooks uses another. Your team maintains a translation spreadsheet that is always out of date. New cost codes fall through the cracks every month.</p>
-          </div>
+          <h3 style="font-size:1.05rem;font-weight:700;color:var(--text-primary);margin-bottom:0.5rem;">Cost codes never match</h3>
+          <p style="color:var(--text-secondary);line-height:1.65;font-size:0.95rem;">Procore uses one numbering system. QuickBooks uses another. Your team maintains a translation spreadsheet that is always out of date. New cost codes fall through the cracks every month.</p>
         </div>
 
-        <div class="glass-card reveal reveal-delay-3" style="padding:0;overflow:hidden;">
-          <div style="border-radius:0;overflow:hidden;max-height:180px;">
-            <img src="images/problem-3.png" alt="Late discovery of construction job cost overruns on a spreadsheet report" style="width:100%;height:auto;display:block;object-fit:cover;" loading="lazy" />
+        <div class="glass-card reveal reveal-delay-3" style="padding:1.5rem;overflow:hidden;">
+          <div style="width:3.5rem;height:3.5rem;border-radius:14px;background:rgba(139,92,246,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
-          <div style="padding:1.5rem;">
-            <h3 style="font-size:1.05rem;font-weight:700;color:var(--text-primary);margin-bottom:0.5rem;">Overruns spotted too late</h3>
-            <p style="color:var(--text-secondary);line-height:1.65;font-size:0.95rem;">By the time someone compares budget to actual, the job is already over. The GC finds out at month-end, not when the problem starts. You look like the firm that missed it.</p>
+          <h3 style="font-size:1.05rem;font-weight:700;color:var(--text-primary);margin-bottom:0.5rem;">Overruns spotted too late</h3>
+          <p style="color:var(--text-secondary);line-height:1.65;font-size:0.95rem;">By the time someone compares budget to actual, the job is already over. The GC finds out at month-end, not when the problem starts. You look like the firm that missed it.</p>
           </div>
         </div>
       </div>
@@ -882,7 +878,7 @@
       </div>
 
       <!-- Step cards (3 steps) -->
-      <div class="grid-3" style="gap:2rem;max-width:1000px;margin:0 auto;">
+      <div class="grid-3 hiw-grid" style="gap:0;max-width:1000px;margin:0 auto;align-items:start;">
         <div class="glass-card reveal reveal-delay-1" style="position:relative;overflow:hidden;">
           <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle at top right, var(--cyan-glow), transparent);pointer-events:none;"></div>
           <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
@@ -896,6 +892,11 @@
           </div>
         </div>
 
+        <!-- Arrow connector 1→2 -->
+        <div class="hide-mobile" style="display:flex;align-items:center;justify-content:center;padding:0 0.25rem;">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><defs><linearGradient id="arrow-grad-1" x1="0" y1="16" x2="32" y2="16" gradientUnits="userSpaceOnUse"><stop stop-color="#f59e0b" stop-opacity="0.6"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0.6"/></linearGradient></defs><path d="M4 16h20M20 10l6 6-6 6" stroke="url(#arrow-grad-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
         <div class="glass-card reveal reveal-delay-2" style="position:relative;overflow:hidden;">
           <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle at top right, var(--cyan-glow), transparent);pointer-events:none;"></div>
           <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
@@ -907,6 +908,11 @@
           <div style="margin-top:1.5rem;border-radius:10px;overflow:hidden;">
             <img src="images/step2-dashboard.png" alt="JobLedger cost code mapping interface showing Procore to QuickBooks translation" style="width:100%;height:auto;display:block;" loading="lazy" />
           </div>
+        </div>
+
+        <!-- Arrow connector 2→3 -->
+        <div class="hide-mobile" style="display:flex;align-items:center;justify-content:center;padding:0 0.25rem;">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><defs><linearGradient id="arrow-grad-2" x1="0" y1="16" x2="32" y2="16" gradientUnits="userSpaceOnUse"><stop stop-color="#8b5cf6" stop-opacity="0.6"/><stop offset="1" stop-color="#22c55e" stop-opacity="0.6"/></linearGradient></defs><path d="M4 16h20M20 10l6 6-6 6" stroke="url(#arrow-grad-2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
 
         <div class="glass-card reveal reveal-delay-3" style="position:relative;overflow:hidden;">
@@ -1200,7 +1206,7 @@
     function getUTMParams() {
       var params = new URLSearchParams(window.location.search);
       var utm = {};
-      ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(function(k) {
+      ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','gclid'].forEach(function(k) {
         var v = params.get(k); if (v) utm[k] = v;
       });
       return utm;
